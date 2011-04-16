@@ -1,0 +1,9 @@
+AddDefaultCharset UTF-8
+
+RewriteEngine on
+
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+
+#RewriteRule ^(.*)$ index.php [L]
+RewriteRule ^(.*)$ index.php?main=$1 [L,QSA]

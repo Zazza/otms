@@ -1,0 +1,36 @@
+@charset "utf-8";
+/* CSS Document */
+
+.iePNG, IMG { filter:expression(fixPNG(this)); } 
+.iePNG A { position: relative; }
+
+.catmenu, .catmenu:hover, #catmenu_sel, #catmenu_sel:hover {
+    cursor: pointer;
+}
+
+#leftBlock {
+    margin-left: 3px; /* increase ie6 margin-left */
+}
+
+#regioncover {
+    padding-top: 3px;
+}
+
+#ldcover {
+    margin-bottom: -9px;
+}
+
+#cat {
+    left: -3px;
+    position: relative;
+}
+
+#all {
+    /*height: auto;*/
+    overflow: auto;
+    zoom: 1; 
+}
+
+#footerleft {
+    margin-left: 3px;
+}
