@@ -199,6 +199,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `login` (`login`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+--
+-- Дамп данных таблицы `users`
+--
+
+INSERT INTO `users` (`id`, `login`, `pass`, `hash`, `name`, `soname`, `email`) VALUES
+(1, 'admin', 'c3284d0f94606de1fd2af172aba15bf3', '', '', '', '');
+
 -- --------------------------------------------------------
 
 --
