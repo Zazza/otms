@@ -219,6 +219,12 @@ CREATE TABLE IF NOT EXISTS `users_group` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+--
+-- Дамп данных таблицы `users_group`
+--
+
+INSERT INTO `users_group` (`id`, `name`) VALUES (1, 'Администраторы');
+
 -- --------------------------------------------------------
 
 --
@@ -230,3 +236,9 @@ CREATE TABLE IF NOT EXISTS `users_priv` (
   `admin` tinyint(1) NOT NULL,
   `group` smallint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `users_priv`
+--
+
+INSERT INTO `users_priv` (`id`, `admin`, `group`) VALUES (1, 1, 1);
