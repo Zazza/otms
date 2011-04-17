@@ -2,9 +2,9 @@
 class Model_Kb extends Model_Index {
     
     public function getGroups() {
-		$sql = "SELECT id, name 
+		$sql = "SELECT id, `name` 
         FROM group_kb
-        ORDER BY name";
+        ORDER BY `name`";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array();
@@ -15,7 +15,7 @@ class Model_Kb extends Model_Index {
     }
     
     public function getGroupName($gid) {
-		$sql = "SELECT name 
+		$sql = "SELECT `name` 
         FROM group_kb
         WHERE id = :gid
         LIMIT 1";
@@ -29,7 +29,7 @@ class Model_Kb extends Model_Index {
     }
     
     public function addGroups($gname) {
-		$sql = "INSERT INTO group_kb (name) VALUES (:name)";
+		$sql = "INSERT INTO group_kb (`name`) VALUES (:name)";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array(":name" => $gname);
@@ -37,7 +37,7 @@ class Model_Kb extends Model_Index {
     }
     
     public function editGroupName($gid, $gname) {
-		$sql = "UPDATE group_kb SET name = :gname WHERE id = :gid LIMIT 1";
+		$sql = "UPDATE group_kb SET `name` = :gname WHERE id = :gid LIMIT 1";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array(":gid" => $gid, ":gname" => $gname);

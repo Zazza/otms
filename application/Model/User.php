@@ -4,7 +4,7 @@ class Model_User extends Model_Index {
     public function getInfo($loginSession) {
         $data = array();
                     
-		$sql = "SELECT users.id, users.name, users.soname, p.admin, p.group, g.name AS gname
+		$sql = "SELECT users.id, users.name AS `name`, users.soname, p.admin, p.group, g.name AS gname
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)
@@ -65,7 +65,7 @@ class Model_User extends Model_Index {
     public function getUserInfo($uid) {
         $data = array();
                     
-		$sql = "SELECT users.id AS uid, users.pass AS pass, users.name AS name, users.soname AS soname, users.email AS email, p.admin AS admin, g.id AS gid, g.name AS gname 
+		$sql = "SELECT users.id AS uid, users.pass AS pass, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, g.id AS gid, g.name AS gname 
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)
@@ -86,7 +86,7 @@ class Model_User extends Model_Index {
     public function getUserInfoFromGroup($gid) {
         $data = array();
                     
-		$sql = "SELECT users.id AS uid, users.pass AS pass, users.name AS name, users.soname AS soname, users.email AS email, p.admin AS admin, g.id AS gid, g.name AS gname 
+		$sql = "SELECT users.id AS uid, users.pass AS pass, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, g.id AS gid, g.name AS gname 
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)
@@ -101,7 +101,7 @@ class Model_User extends Model_Index {
     }
     
     public function addUser($login, $pass, $name, $soname, $email) {
-        $sql = "INSERT INTO users (login, pass, name, soname, email) VALUES (:login, :pass, :name, :soname, :email)";
+        $sql = "INSERT INTO users (login, pass, `name`, soname, email) VALUES (:login, :pass, :name, :soname, :email)";
         $res = $this->registry['db']->prepare($sql);
 		$param = array(":login" => $login, ":pass" => md5(md5($pass)), ":name" => $name, ":soname" => $soname, ":email" => $email);
 		$res->execute($param);
@@ -122,7 +122,7 @@ class Model_User extends Model_Index {
     }
     
     public function editUser($uid, $name, $soname, $email) {
-        $sql = "UPDATE users SET name = :name, soname = :soname, email = :email WHERE id = :id LIMIT 1";
+        $sql = "UPDATE users SET `name` = :name, soname = :soname, email = :email WHERE id = :id LIMIT 1";
         $res = $this->registry['db']->prepare($sql);
 		$param = array(":id" => $uid, ":name" => $name, ":soname" => $soname, ":email" => $email);
 		$res->execute($param);
@@ -143,7 +143,7 @@ class Model_User extends Model_Index {
     }
     
     public function getUsersList() {
-		$sql = "SELECT users.id AS id, users.login AS login, users.name AS name, users.soname AS soname, users.email AS email, p.admin AS admin, p.group AS gid, g.name AS gname
+		$sql = "SELECT users.id AS id, users.login AS login, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, p.group AS gid, g.name AS gname
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)
@@ -182,9 +182,9 @@ class Model_User extends Model_Index {
     }
     
     public function getGroups() {
-		$sql = "SELECT id, name 
+		$sql = "SELECT id, `name` 
         FROM users_group
-        ORDER BY name";
+        ORDER BY `name`";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array();
@@ -195,7 +195,7 @@ class Model_User extends Model_Index {
     }
     
     public function getGroupName($gid) {
-		$sql = "SELECT name 
+		$sql = "SELECT `name` 
         FROM users_group
         WHERE id = :gid
         LIMIT 1";
@@ -211,7 +211,7 @@ class Model_User extends Model_Index {
     public function getGroupId($gname) {
 		$sql = "SELECT id 
         FROM users_group
-        WHERE name = :gname
+        WHERE `name` = :gname
         LIMIT 1";
 		
 		$res = $this->registry['db']->prepare($sql);
@@ -223,7 +223,7 @@ class Model_User extends Model_Index {
     }
     
     public function addGroups($gname) {
-		$sql = "INSERT INTO users_group (name) VALUES (:name)";
+		$sql = "INSERT INTO users_group (`name`) VALUES (:name)";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array(":name" => $gname);
@@ -231,7 +231,7 @@ class Model_User extends Model_Index {
     }
     
     public function editGroupName($gid, $gname) {
-		$sql = "UPDATE users_group SET name = :gname WHERE id = :gid LIMIT 1";
+		$sql = "UPDATE users_group SET `name` = :gname WHERE id = :gid LIMIT 1";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array(":gid" => $gid, ":gname" => $gname);

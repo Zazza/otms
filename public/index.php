@@ -4,7 +4,7 @@ $start_time = microtime();
 
 error_reporting(E_ALL);
 
-if (version_compare(phpversion(), '5.3.0', '<') == true) { die ('PHP5.3 Only'); }
+if (version_compare(phpversion(), '5.1.0', '<') == true) { die ('PHP5.3 Only'); }
 
 require_once '../application/settings/config.php';
 

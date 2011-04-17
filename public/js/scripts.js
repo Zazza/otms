@@ -147,11 +147,20 @@ function getInfo(id) {
 	})
 }
 
+function htmlarea() {
+    $("#jHtmlArea").htmlarea({
+        toolbar: [
+                    ["bold", "italic", "underline", "|", "forecolor"],
+                    ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+                    ["link", "unlink", "|", "image"]
+                    ]});
+}
+
 function showEditTask(tid) {
     init('/fm/');
 
     $("#jHtmlArea").text("");
-    $("#jHtmlArea").htmlarea();
+    htmlarea();
 
     $('#advinfo').dialog({
 		modal: true,
@@ -173,7 +182,7 @@ function showEditTask(tid) {
         height: 460
 	});
     
-    $("#jHtmlArea").htmlarea();
+    htmlarea();
 }
 
 function showTaskWindow() {
@@ -196,7 +205,7 @@ function showTaskWindow() {
         height: 460
 	});
     
-    $("#jHtmlArea").htmlarea();
+    htmlarea();
 }
 
 function showAdvanced(id) {
@@ -214,7 +223,7 @@ function showAdvanced(id) {
         height: 460
 	});
     
-    $("#jHtmlArea").htmlarea();
+    htmlarea();
 }
 
 function addAdvanced(id, text) {
@@ -252,7 +261,7 @@ function editAdv(id, oaid) {
 		data: data,
 		success: function(res) {
             $("#jHtmlArea").text(res);
-            $("#jHtmlArea").htmlarea();
+            htmlarea();
 		}
 	})
 }

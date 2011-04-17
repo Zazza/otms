@@ -2,9 +2,9 @@
 class Model_Tt extends Model_Index {
     
     public function getGroups() {
-		$sql = "SELECT id, name 
+		$sql = "SELECT id, `name` 
         FROM group_tt
-        ORDER BY name";
+        ORDER BY `name`";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array();
@@ -15,7 +15,7 @@ class Model_Tt extends Model_Index {
     }
     
     public function getGroupName($gid) {
-		$sql = "SELECT name 
+		$sql = "SELECT `name` 
         FROM group_tt
         WHERE id = :gid
         LIMIT 1";
@@ -29,7 +29,7 @@ class Model_Tt extends Model_Index {
     }
     
     public function addGroups($gname) {
-		$sql = "INSERT INTO group_tt (name) VALUES (:name)";
+		$sql = "INSERT INTO group_tt (`name`) VALUES (:name)";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array(":name" => $gname);
@@ -37,7 +37,7 @@ class Model_Tt extends Model_Index {
     }
     
     public function editGroupName($gid, $gname) {
-		$sql = "UPDATE group_tt SET name = :gname WHERE id = :gid LIMIT 1";
+		$sql = "UPDATE group_tt SET `name` = :gname WHERE id = :gid LIMIT 1";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array(":gid" => $gid, ":gname" => $gname);
@@ -487,7 +487,7 @@ class Model_Tt extends Model_Index {
     public function getComments($tid) {
         $data = array();
         
-        $sql = "SELECT td.id, td.uid, users.name, users.soname, td.text, td.timestamp
+        $sql = "SELECT td.id, td.uid, users.name AS `name`, users.soname, td.text, td.timestamp
         FROM troubles_discussion AS td
         LEFT JOIN users ON (users.id = td.uid)
         WHERE td.tid = :tid";

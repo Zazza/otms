@@ -1,7 +1,7 @@
 <?php
 class Model_Task extends Model_Index {
     public function getTemplates() {
-		$sql = "SELECT t.id AS id, t.name AS name
+		$sql = "SELECT t.id AS id, t.name AS `name`
         FROM templates AS t
         ORDER BY t.id";
 		
@@ -13,7 +13,7 @@ class Model_Task extends Model_Index {
     }
     
     public function getTemplate($tid) {
-		$sql = "SELECT t.id AS id, t.name AS name, f.id AS fid, f.field AS field, f.main AS main, f.expand AS expand
+		$sql = "SELECT t.id AS id, t.name AS `name`, f.id AS fid, f.field AS field, f.main AS main, f.expand AS expand
         FROM templates AS t
         LEFT JOIN templates_fields AS f ON (t.id = f.tid)
         WHERE t.id = :tid
@@ -43,7 +43,7 @@ class Model_Task extends Model_Index {
     
     public function addTemplate($post) {
         if ($post["name"] != '') {
-            $sql = "INSERT INTO templates (name) VALUES (:name)";
+            $sql = "INSERT INTO templates (`name`) VALUES (:name)";
             
             $res = $this->registry['db']->prepare($sql);
             $param = array(":name" => $post["name"]);
@@ -73,7 +73,7 @@ class Model_Task extends Model_Index {
     }
     
     public function editTemplate($tid, $post) {
-        $sql = "UPDATE templates SET name = :name WHERE id = :tid LIMIT 1";
+        $sql = "UPDATE templates SET `name` = :name WHERE id = :tid LIMIT 1";
         
         $res = $this->registry['db']->prepare($sql);
         $param = array(":tid" => $tid, ":name" => $post["name"]);

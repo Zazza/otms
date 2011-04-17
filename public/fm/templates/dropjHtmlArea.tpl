@@ -10,7 +10,7 @@ $("{{ obj }}").droppable({
         if ( (ext == "gif") || (ext == "png") || (ext == "jpg") || (ext == "jpeg") ) {
             $("#jHtmlArea").htmlarea('pasteHTML', '<a href="{{ path }}' + ui.draggable.text() + '"><img src="{{ dir }}' + ui.draggable.text() + '" alt="изображение" border="0" /></a>');
         } else {
-            $("#jHtmlArea").htmlarea('pasteHTML', '<a href="{{ path }}' + ui.draggable.text() + '">' + ui.draggable.text() + '</a>');
+            $("#jHtmlArea").htmlarea('pasteHTML', '<a href="{{ path }}' + ui.draggable.text() + '">' + ui.draggable.text() + '</a>'); ui.draggable.close();
         }
     }
 });
