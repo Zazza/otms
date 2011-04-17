@@ -487,7 +487,7 @@ class Model_Tt extends Model_Index {
     public function getComments($tid) {
         $data = array();
         
-        $sql = "SELECT td.id, td.uid, users.name AS `name`, users.soname, td.text, td.timestamp
+        $sql = "SELECT td.id, td.uid, users.name AS `name`, users.soname, td.text, td.timestamp AS `timestamp`
         FROM troubles_discussion AS td
         LEFT JOIN users ON (users.id = td.uid)
         WHERE td.tid = :tid";

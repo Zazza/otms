@@ -167,7 +167,7 @@ class Model_Task extends Model_Index {
     public function getShortObject($id) {
         $rows = FALSE;
         
-        $sql = "SELECT o.id AS id, o.timestamp AS timestamp, o.template AS tid, t.name AS tname, ov.fid AS fid, tf.field AS field, tf.main AS main, ov.val AS val
+        $sql = "SELECT o.id AS id, o.timestamp AS `timestamp`, o.template AS tid, t.name AS tname, ov.fid AS fid, tf.field AS field, tf.main AS main, ov.val AS val
 				FROM objects AS o
                 LEFT JOIN objects_vals AS ov ON (ov.oid = o.id)
                 LEFT JOIN templates_fields AS tf ON (tf.id = ov.fid)
@@ -209,7 +209,7 @@ class Model_Task extends Model_Index {
     public function getObject($id) {
         $rows = FALSE;
         
-        $sql = "SELECT o.id AS id, o.timestamp AS timestamp, o.template AS tid, t.name AS tname, ov.fid AS fid, tf.field AS field, tf.main AS main, tf.expand AS expand, ov.val AS val
+        $sql = "SELECT o.id AS id, o.timestamp AS `timestamp`, o.template AS tid, t.name AS tname, ov.fid AS fid, tf.field AS field, tf.main AS main, tf.expand AS expand, ov.val AS val
 				FROM objects AS o
                 LEFT JOIN objects_vals AS ov ON (ov.oid = o.id)
                 LEFT JOIN templates_fields AS tf ON (tf.id = ov.fid)
@@ -301,7 +301,7 @@ class Model_Task extends Model_Index {
     public function getAdvancedInfo($id) {
         $rows = FALSE;
         
-        $sql = "SELECT oa.oid AS id, oa.id AS oaid, oa.val AS val, oa.timestamp AS timestamp, u.id AS uid, u.name AS uname, u.soname AS usoname
+        $sql = "SELECT oa.oid AS id, oa.id AS oaid, oa.val AS val, oa.timestamp AS `timestamp`, u.id AS uid, u.name AS uname, u.soname AS usoname
                 FROM objects_advanced AS oa
                 LEFT JOIN users AS u ON (u.id = oa.who)
                 WHERE oa.oid = :id
