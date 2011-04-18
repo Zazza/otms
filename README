@@ -22,3 +22,10 @@ $config['db'] = array(
 );
 
 $config['mailSender'] = 'helpdesk@example.com'; // почта, для рассылки уведомлений HelpDesk
+
+UPDATE:
+Если планруется обновление до версии 0.3 с более ранних, необходимо выполнить:
+mysql> ALTER TABLE `users_priv` ADD `readonly` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `admin`;
+mysql> ALTER TABLE `users_priv` CHANGE `admin` `admin` TINYINT( 1 ) NOT NULL DEFAULT '0'
+
+По-умолчанию включен кеш шаблонизатора, поэтому, если меняются шаблоны, не забыть очистить папку /application/View/cache/
