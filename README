@@ -1,1 +1,24 @@
 OTMS HelpDesk
+
+Требования:
+1) PHP старше 5.1 версии
+    Модули:
+        pdo_mysql
+        mod_rewrite
+2) MYSQL (поддержка InnoDB, MyISAM для полнотекстового поиска в некоторых базах)
+
+Установка:
+1) Директория public - должна соответствовать параметрам DirectoryRoot из Apache или root из Nginx
+2) Директории library и application, лежат на уровень выше. Там обычно распологаются директории logs и tmp
+3) scheme.sql - структура БД, не забываем импортировать. В файле содержится единственный пользователь для входа admin с паролем admin
+4) Правим файл /application/settings/config.php:
+
+$config['db'] = array(
+'adapter' => 'mysql',
+'host' => 'localhost',
+'username' => '', // имя пользователя БД
+'password' => '', // пароль пользователя БД
+'dbname' => '' // имя таблицы
+);
+
+$config['mailSender'] = 'helpdesk@example.com'; // почта, для рассылки уведомлений HelpDesk

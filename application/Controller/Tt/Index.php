@@ -46,7 +46,7 @@ class Controller_Tt_Index extends Controller_Index {
             }
 
             if (count($tasks) == 0) {
-                $this->view->setMainContent("<p style='color: #777'>Задачи не найдены</p>");
+                $this->view->setMainContent("<p>Задачи не найдены</p>");
             }
             
             if (!isset($args[0]) or ($args[0] == "page"))  {
@@ -66,11 +66,11 @@ class Controller_Tt_Index extends Controller_Index {
                         
                         $obj = $task->getShortObject($data[0]["oid"]);
                         
-                        $this->view->tt_task(array("data" => $data, "author" => $author, "ruser" => $ruser, "notObj" => true, "obj" => $obj, "numComments" => $numComments, "uid" => $this->registry["ui"]["id"]));
+                        $this->view->tt_task(array("ui" => $this->registry["ui"], "data" => $data, "author" => $author, "ruser" => $ruser, "notObj" => true, "obj" => $obj, "numComments" => $numComments, "uid" => $this->registry["ui"]["id"]));
     
                         unset($ruser);
                     } else {
-                        $this->view->setMainContent("Задача не найдена");
+                        $this->view->setMainContent("<p>Задача не найдена</p>");
                     }   
                 }
                 

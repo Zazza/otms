@@ -44,8 +44,10 @@
 
 <p style="margin-top: 10px">
 <img src="/img/information-button.png" alt="info" border="0" style="vertical-align: middle" /> <a style="cursor: pointer" onclick="getInfo({{ obj.0.id }})">полные данные</a>
+{% if ui.readonly == 0 %}
 <br />
 <img src="/img/edit.png" alt="edit" border="0" style="vertical-align: middle" /> <a href="/objects/edit/{{ obj.0.id }}/">изменить данные</a>
+{% endif %}
 </p>
 
 </div>
@@ -126,10 +128,12 @@
 <p style="margin-top: 20px">
 <span style="float: right"><img src="/img/user-medium.png" alt="" style="vertical-align: middle" /> <a href="/tt/{{ data.0.id }}/">комментарии</a> ({{ numComments }})</span>
 
+{% if ui.readonly == 0 %}
 {% if data.0.gid == 0 %}
 <span class="sel" style="float: left; font-weight: bold"><img src="/img/edititem.gif" alt="" style="vertical-align: middle" /> <a style="cursor: pointer; text-decoration: none" onclick="showEditTask({{ data.0.id }})">комментировать</a></span>
 
 <span class="sel" style="margin-left: 10px; float: left; font-weight: bold"><img src="/img/inbox-download.png" alt="" style="vertical-align: middle" /> <a style="cursor: pointer; text-decoration: none" onclick="closeTask({{ data.0.id }})">Закрыть задачу</a></span>
+{% endif %}
 {% endif %}
 </p>
 

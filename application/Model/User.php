@@ -4,7 +4,7 @@ class Model_User extends Model_Index {
     public function getInfo($loginSession) {
         $data = array();
                     
-		$sql = "SELECT users.id, users.name AS `name`, users.soname, p.admin, p.group, g.name AS gname
+		$sql = "SELECT users.id, users.name AS `name`, users.soname, p.admin, p.readonly, p.group, g.name AS gname
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)
@@ -65,7 +65,7 @@ class Model_User extends Model_Index {
     public function getUserInfo($uid) {
         $data = array();
                     
-		$sql = "SELECT users.id AS uid, users.pass AS pass, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, g.id AS gid, g.name AS gname 
+		$sql = "SELECT users.id AS uid, users.pass AS pass, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, p.readonly AS readonly, g.id AS gid, g.name AS gname 
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)
@@ -86,7 +86,7 @@ class Model_User extends Model_Index {
     public function getUserInfoFromGroup($gid) {
         $data = array();
                     
-		$sql = "SELECT users.id AS uid, users.pass AS pass, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, g.id AS gid, g.name AS gname 
+		$sql = "SELECT users.id AS uid, users.pass AS pass, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, p.readonly AS readonly, g.id AS gid, g.name AS gname 
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)
@@ -114,10 +114,21 @@ class Model_User extends Model_Index {
         return $uid[0]["id"];
     }
     
-    public function addUserPriv($uid, $admin, $gname) {
-        $sql = "INSERT INTO users_priv (id, admin, `group`) VALUES (:id, :admin, :group)";
+    public function addUserPriv($uid, $priv, $gname) {
+        if ($priv == "admin") {
+            $admin = 1;
+            $readonly = 0;
+        } elseif ($priv == "readonly") {
+            $admin = 0;
+            $readonly = 1; 
+        } else {
+            $admin = 0;
+            $readonly = 0;
+        }
+        
+        $sql = "INSERT INTO users_priv (id, admin, readonly, `group`) VALUES (:id, :admin, :readonly,  :group)";
         $res = $this->registry['db']->prepare($sql);
-		$param = array(":id" => $uid, ":admin" => $admin, ":group" => $gname);
+		$param = array(":id" => $uid, ":admin" => $admin, ":readonly" => $readonly, ":group" => $gname);
 		$res->execute($param);
     }
     
@@ -135,15 +146,26 @@ class Model_User extends Model_Index {
 		$res->execute($param);
     }
     
-    public function editUserPriv($uid, $admin, $gname) {
-        $sql = "UPDATE users_priv SET id = :id, admin = :admin, `group` = :group WHERE id = :id LIMIT 1";
+    public function editUserPriv($uid, $priv, $gname) {
+        if ($priv == "admin") {
+            $admin = 1;
+            $readonly = 0;
+        } elseif ($priv == "readonly") {
+            $admin = 0;
+            $readonly = 1; 
+        } else {
+            $admin = 0;
+            $readonly = 0;
+        }
+        
+        $sql = "UPDATE users_priv SET id = :id, admin = :admin, readonly = :readonly, `group` = :group WHERE id = :id LIMIT 1";
         $res = $this->registry['db']->prepare($sql);
-		$param = array(":id" => $uid, ":admin" => $admin, ":group" => $gname);
+		$param = array(":id" => $uid, ":admin" => $admin, ":readonly" => $readonly, ":group" => $gname);
 		$res->execute($param);
     }
     
     public function getUsersList() {
-		$sql = "SELECT users.id AS id, users.login AS login, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, p.group AS gid, g.name AS gname
+		$sql = "SELECT users.id AS id, users.login AS login, users.name AS `name`, users.soname AS soname, users.email AS email, p.admin AS admin, p.readonly AS readonly, p.group AS gid, g.name AS gname
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)

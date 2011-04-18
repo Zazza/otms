@@ -1,7 +1,9 @@
+{% if ui.readonly == 0 %}
 <p>
     <a href="/tt/add/"><img border="0" src="/img/plus-button.png" alt="" style="vertical-align: middle" /></a>
     <a class="aleft" href="/tt/add/">Создать задачу</a>
 </p>
+{% endif %}
 
 <p>
     <a href="/tt/cal/"><img style="vertical-align: middle" src="/img/left/calendar.png" alt="" border="0" /></a>
@@ -20,7 +22,9 @@
 </p>
 {% endif %}
 
+{% if ui.readonly == 0 %}
 <p>
     <a href="/tt/new/"><img style="vertical-align: middle" src="/img/left/task--plus.png" alt="" border="0" /></a>
     <a class="aleft" href="/tt/new/">Без ответственных</a>
 </p>
+{% endif %}

@@ -132,38 +132,6 @@ class Model_Task extends Model_Index {
         }
     }
     
-    public function findObjects($find) {
-		$res = array();
-		foreach ($find as $part) {
-			$str = "+".$part;
-			$finds[] = $str;
-		}
-
-		$finds = implode(" ", $finds);
-        
-		$sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT o.id AS id, MATCH (ov.val) AGAINST (:find IN BOOLEAN MODE) AS relev
-				FROM objects AS o
-                LEFT JOIN objects_vals AS ov ON (ov.oid = o.id)
-				HAVING relev > 0
-				ORDER BY relev DESC, o.id DESC
-				LIMIT " . $this->startRow .  ", " . $this->limit;
-
-		$res = $this->registry['db']->prepare($sql);
-		$param = array(":find" => $finds);
-		$res->execute($param);
-		$rows = $res->fetchAll(PDO::FETCH_ASSOC);
-        
-        $this->totalPage = $this->registry['db']->query("SELECT FOUND_ROWS()")->fetchColumn();
-        
-		//Если общее число статей больше показанного, вызовем пейджер
-		if ($this->totalPage < $this->limit+1)  {
-		} else {
-			$this->Pager();
-		}
-
-		return $rows;
-    }
-    
     public function getShortObject($id) {
         $rows = FALSE;
         

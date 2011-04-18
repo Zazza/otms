@@ -22,12 +22,7 @@ class Controller_Objects extends Controller_Index {
                 
                 $controller = new Controller_Objects_Edit($this->registry);
                 $controller->index($args);
-            
-            } elseif  ($args[0] == "page") {
-                
-                $controller = new Controller_Objects_Index($this->registry);
-                $controller->index($args);
-                        
+
             } else {
                 
                 $controller = new Controller_Objects_Show($this->registry);
@@ -35,7 +30,7 @@ class Controller_Objects extends Controller_Index {
                 
             }
         } else {
-            $controller = new Controller_Objects_Index($this->registry);
+            $controller = new Controller_Objects_List($this->registry);
             $controller->index($args);
         }
     }

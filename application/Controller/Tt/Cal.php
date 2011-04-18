@@ -17,7 +17,7 @@ class Controller_Tt_Cal extends Controller_Index {
             $itertask = $this->tt->getNumIterTasks($this->registry["ui"]["id"]);
             $timetask = $this->tt->getNumTimeTasks($this->registry["ui"]["id"]);
             
-            $this->view->tt_cal(array("day" => date("d"), "month" => date("m"), "year" => date("Y"), "allmytask" => $allmytask, "allmetask" => $allmetask, "itertask" => $itertask, "timetask" => $timetask, "calYear" => $this->registry["calYear"]));
+            $this->view->tt_cal(array("ui" => $this->registry["ui"], "day" => date("d"), "month" => date("m"), "year" => date("Y"), "allmytask" => $allmytask, "allmetask" => $allmetask, "itertask" => $itertask, "timetask" => $timetask, "calYear" => $this->registry["calYear"]));
         }
            
         $this->view->showPage();

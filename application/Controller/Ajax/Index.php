@@ -31,8 +31,8 @@ class Controller_Ajax_Index {
     }
     
     public function getMonth($params) {
-        $month = $params["month"];
-        $year = $params["year"];
+        $month = htmlspecialchars($params["month"]);
+        $year = htmlspecialchars($params["year"]);
         
         $data = $this->tt->getMonthTasks($year, $month, $this->registry["ui"]["id"]);
         foreach($data as $key=>$value) {

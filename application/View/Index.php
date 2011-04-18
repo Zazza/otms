@@ -91,33 +91,47 @@ class View_Index {
 		
         
         $categories = array();
-
+        
+        $i = 1;
+        
 		if ($this->registry["auth"]) {
-			$categories[1]["name"] = "Задачи";
-			$categories[1]["link"] = "/tt/";
+			$categories[$i]["name"] = "Задачи";
+			$categories[$i]["link"] = "/tt/";
+            $i++;
             
-			//$categories[2]["name"] = "База";
-			//$categories[2]["link"] = "/kb/";
+			//$categories[$i]["name"] = "База";
+			//$categories[$i]["link"] = "/kb/";
+            //$i++;
             
-			$categories[2]["name"] = "Объекты";
-			$categories[2]["link"] = "/objects/";
+			$categories[$i]["name"] = "Объекты";
+			$categories[$i]["link"] = "/objects/";
+            $i++;
             
             if ($this->registry["ui"]["admin"]) {
-    			$categories[3]["name"] = "Настройки";
-    			$categories[3]["link"] = "/settings/";
+    			$categories[$i]["name"] = "Настройки";
+    			$categories[$i]["link"] = "/settings/";
+                $i++;
             }
             
-			//$categories[]["name"] = "Статистика";
-			//$categories[]["link"] = "/stat/";
+			$categories[$i]["name"] = "Поиск";
+			$categories[$i]["link"] = "/find/";
+            $i++;
             
-			//$categories[]["name"] = "Помощь";
-			//$categories[]["link"] = "/help/";
+			//$categories[$i]["name"] = "Статистика";
+			//$categories[$i]["link"] = "/stat/";
+            //$i++;
+            
+			//$categories[$i]["name"] = "Помощь";
+			//$categories[$i]["link"] = "/help/";
+            //$i++;
 		} else {
-			$categories[1]["name"] = "Главная";
-			$categories[1]["link"] = "/";
+			$categories[$i]["name"] = "Главная";
+			$categories[$i]["link"] = "/";
+            $i++;
           
-			$categories[2]["name"] = "Вход";
-			$categories[2]["link"] = "/login/";
+			$categories[$i]["name"] = "Вход";
+			$categories[$i]["link"] = "/login/";
+            $i++;
 		};
 
 		for ($i=1; $i<=count($categories); $i++) {

@@ -51,19 +51,13 @@ class Controller_Settings_Users extends Controller_Index {
                                 if ($data["pass"] != $_POST["pass"]) {
                                     if ($txt = $validate->password($_POST["pass"])) { $err[] = $txt; };
                                 }
-                                
-                                if (isset($_POST["admin"])) {
-                                    $admin = 1;
-                                } else {
-                                    $admin = 0;
-                                }
-                                
+
                                 if (count($err) == 0) {
                                     $uid = $this->user->editUser($args[2], $_POST["name"], $_POST["soname"], $_POST["email"]);
                                     if ($data["pass"] != $_POST["pass"]) {
                                         $this->user->editUserPass($args[2], $_POST["pass"]);
                                     }
-                                    $this->user->editUserPriv($args[2], $admin, $_POST["group_name"]);
+                                    $this->user->editUserPriv($args[2], $_POST["priv"], $_POST["group_name"]);
                                     
                                     $this->view->refresh(array("timer" => "1", "url" => "/settings/users/"));
                                 } else {
@@ -71,6 +65,11 @@ class Controller_Settings_Users extends Controller_Index {
                                     $this->view->settings_edituser(array("group" => $group, "err" => $err, "post" => $_POST));
                                 }
                             } else {
+                                if ($data["admin"]) {
+                                    $data["priv"] = "admin";
+                                } elseif ($data["readonly"]) {
+                                    $data["priv"] = "readonly";
+                                }
                                 $this->view->settings_edituser(array("post" => $data, "group" => $group));
                             }
                         }
@@ -86,16 +85,10 @@ class Controller_Settings_Users extends Controller_Index {
                         if ($txt = $validate->name($_POST["name"])) { $err[] = $txt; };
                         if ($txt = $validate->soname($_POST["soname"])) { $err[] = $txt; };
                         if ($txt = $validate->password($_POST["pass"])) { $err[] = $txt; };
-                        
-                        if (isset($_POST["admin"])) {
-                            $admin = 1;
-                        } else {
-                            $admin = 0;
-                        }
-                        
+
                         if (count($err) == 0) {
                             $uid = $this->user->addUser($_POST["login"], $_POST["pass"], $_POST["name"], $_POST["soname"], $_POST["email"]);
-                            $this->user->addUserPriv($uid, $admin, $_POST["group_name"]);
+                            $this->user->addUserPriv($uid, $_POST["priv"], $_POST["group_name"]);
                             
                             $this->view->refresh(array("timer" => "1", "url" => "/settings/users/"));
                         } else {

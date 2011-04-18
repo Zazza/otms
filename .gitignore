@@ -1,2 +1,4 @@
 public/upload/*
 !public/upload/.htaccess
+/logs
+/tmp

@@ -10,13 +10,23 @@ class Controller_Objects_List extends Controller_Index {
             
             $this->view->setTitle("Просмотр");
        
-            $this->view->setLeftContent($this->view->render("left_objects", array()));
+            $this->view->setLeftContent($this->view->render("left_objects", array("ui" => $this->registry["ui"])));
             
             $task = new Model_Task($this->registry);
     
             $clauseSess = & $_SESSION["clause"];
             
             if (isset($_POST["submit"])) {
+
+                $_POST["templates"] = htmlspecialchars($_POST["templates"]);
+                $_POST["criterion"] = htmlspecialchars($_POST["criterion"]);
+                $_POST["sday"] = htmlspecialchars($_POST["sday"]);
+                $_POST["smonth"] = htmlspecialchars($_POST["smonth"]);
+                $_POST["syear"] = htmlspecialchars($_POST["syear"]);
+                $_POST["fday"] = htmlspecialchars($_POST["fday"]);
+                $_POST["fmonth"] = htmlspecialchars($_POST["fmonth"]);
+                $_POST["fyear"] = htmlspecialchars($_POST["fyear"]);
+
                 $clauseSess["string"] = $_POST;
             } else {
                 if (!isset($clauseSess["string"])) {
@@ -62,9 +72,9 @@ class Controller_Objects_List extends Controller_Index {
                             $numTroubles = $task->getNumTroubles($part["id"]);                        
                             $advInfo = $task->getAdvancedInfo($part["id"]);
                             $numAdvInfo = $task->getNumAdvancedInfo($part["id"]);
-                            $this->view->objectMain(array("obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles));
+                            $this->view->objectMain(array("ui" => $this->registry["ui"], "obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles));
                         } else {
-                            $this->view->setMainContent("Объект не найден");
+                            $this->view->setMainContent("<p>Объект не найден</p>");
                         }
                     }
                 

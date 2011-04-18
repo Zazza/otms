@@ -2,7 +2,7 @@
 
 <div id="subright">
 <div id="find">
-<form action="/objects/" method="post" name="form_find" id="form_find">
+<form action="/find/" method="post" name="form_find" id="form_find">
 <input type="text" name="find" id="in_find" />
 <input name="button_find" id="but_find" type="submit" value="Найти" />
 </form>

@@ -36,6 +36,7 @@
 <td align="center" style="font-weight: bold; font-size: 10px">фамилия</td>
 <td align="center" style="font-weight: bold; font-size: 10px">группа</td>
 <td align="center" style="font-weight: bold; font-size: 10px">администратор</td>
+<td align="center" style="font-weight: bold; font-size: 10px">только чтение</td>
 </tr>
 
 {% for part in list %}
@@ -71,6 +72,14 @@
 
 <td align="center" style="border: 1px solid #ccc">
     {% if part.admin %}
+        <span style="color: red">+</span>
+    {% else %}
+        <span style="color: #AAA">-</span>
+    {% endif %}
+</td>
+
+<td align="center" style="border: 1px solid #ccc">
+    {% if part.readonly %}
         <span style="color: red">+</span>
     {% else %}
         <span style="color: #AAA">-</span>

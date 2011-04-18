@@ -13,7 +13,13 @@
 <p><b>Имя</b></p><p><input name='name' type='text' size='60' value="{{ post.name }}" /></p>
 <p><b>Фамилия</b></p><p><input name='soname' type='text' size='60' value="{{ post.soname }}" /></p>
 <p><b>Email</b></p><p><input name='email' type='text' size='60' value="{{ post.email }}" /></p>
-<p style="margin: 7px 0"><label><input name='admin' type='checkbox' {% if post.admin %} checked="checked" {% endif %} />&nbsp;<b>Администратор</b></label></p>
+
+<p style="margin: 7px 0">
+    <label><input name='priv' value="admin" type='radio' {% if post.priv == "admin" %} checked {% endif %} />&nbsp;<b>Администратор</b></label>
+    <label><input name='priv' value="null" type='radio' {% if post.priv == null  %} checked {% endif %} />&nbsp;<b>Обычный пользователь</b></label>
+    <label><input name='priv' value="readonly" type='radio' {% if post.priv == "readonly" %} checked {% endif %} />&nbsp;<b>Только чтение</b></label>
+</p>
+
 <p style="margin: 7px 0"><b>Группа</b>&nbsp;
 <select name="group_name">
 {% for part in group %}

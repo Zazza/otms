@@ -37,12 +37,12 @@ class Controller_Tt_Show extends Controller_Index {
                             $numTroubles = $task->getNumTroubles($data[0]["oid"]);
                             $advInfo = $task->getAdvancedInfo($data[0]["oid"]);
                             $numAdvInfo = $task->getNumAdvancedInfo($data[0]["oid"]);
-                            $this->view->objectMain(array("obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles, "group" => $group));
+                            $this->view->objectMain(array("ui" => $this->registry["ui"], "obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles, "group" => $group));
                         } else {
-                            $this->view->setMainContent("Объект не найден");
+                            $this->view->setMainContent("<p>Объект не найден</p>");
                         }
         
-                        $this->view->tt_task(array("data" => $data, "author" => $author, "ruser" => $ruser, "numComments" => $numComments, "uid" => $this->registry["ui"]["id"]));
+                        $this->view->tt_task(array("ui" => $this->registry["ui"], "data" => $data, "author" => $author, "ruser" => $ruser, "numComments" => $numComments, "uid" => $this->registry["ui"]["id"]));
                         
                         $comments = $this->tt->getComments($args[0]);
                         if (count($comments) > 0) {
@@ -52,10 +52,10 @@ class Controller_Tt_Show extends Controller_Index {
                             $this->view->tt_comment(array("comment" => $part));
                         }
                     } else {
-                        $this->view->setMainContent("Задача не найдена");
+                        $this->view->setMainContent("<p>Задача не найдена</p>");
                     }            
                 } else {
-                    $this->view->setMainContent("Задача не найдена");
+                    $this->view->setMainContent("<p>Задача не найдена</p>");
                 }            
             }
         }

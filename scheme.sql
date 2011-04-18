@@ -233,7 +233,8 @@ INSERT INTO `users_group` (`id`, `name`) VALUES (1, 'Администратор�
 
 CREATE TABLE IF NOT EXISTS `users_priv` (
   `id` int(11) NOT NULL,
-  `admin` tinyint(1) NOT NULL,
+  `admin` tinyint(1) NOT NULL DEFAULT '0',
+  `readonly` tinyint(1) NOT NULL DEFAULT '0',
   `group` smallint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

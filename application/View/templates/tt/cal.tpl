@@ -141,7 +141,13 @@ getMonth();
 
 $(".caltd").click(function(){
     if ($(".subtd", this).attr("title") > 0) {
-        $('<div title="Выбранная дата" style="display: none; text-align: left; font-size: 12px"><p style="margin-bottom: 10px; text-align: center"><b>' + $(".subtd", this).text() + "-" + $("#month").val() + "-" + $("#year").val() + '</b></p><p style="margin-bottom: 5px"><img src="/img/plus-button.png" alt="" style="vertical-align: middle" /> <a href="/tt/add/?date=' + $(".subtd", this).attr("title") + '">Создать задачу</a></p><p><img src="/img/edititem.gif" alt="" style="vertical-align: middle" /> <a href="/tt/?date=' + $(".subtd", this).attr("title") + '">Перейти к этой дате</a></p></div>').dialog({ width: 200, height: 120 });
+        {% if ui.readonly == 1 %}
+            var dialog = '<div title="Выбранная дата" style="display: none; text-align: left; font-size: 12px"><p style="margin-bottom: 10px; text-align: center"><b>' + $(".subtd", this).text() + "-" + $("#month").val() + "-" + $("#year").val() + '</b></p><p><img src="/img/edititem.gif" alt="" style="vertical-align: middle" /> <a href="/tt/?date=' + $(".subtd", this).attr("title") + '">Перейти к этой дате</a></p></div>';
+        {% else %}
+            var dialog = '<div title="Выбранная дата" style="display: none; text-align: left; font-size: 12px"><p style="margin-bottom: 10px; text-align: center"><b>' + $(".subtd", this).text() + "-" + $("#month").val() + "-" + $("#year").val() + '</b></p><p style="margin-bottom: 5px"><img src="/img/plus-button.png" alt="" style="vertical-align: middle" /> <a href="/tt/add/?date=' + $(".subtd", this).attr("title") + '">Создать задачу</a></p><p><img src="/img/edititem.gif" alt="" style="vertical-align: middle" /> <a href="/tt/?date=' + $(".subtd", this).attr("title") + '">Перейти к этой дате</a></p></div>';
+        {% endif %}
+        
+        $(dialog).dialog({ width: 200, height: 120 });
     }
 });
 
