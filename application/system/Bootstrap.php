@@ -55,14 +55,14 @@
 		
 		$content = new Twig_Loader_Filesystem($this->_config["path"]["root"] . $this->_config['path']['layouts']);
 		$layouts = new Twig_Environment($content, array(
-			//'cache' => $this->registry["cache"]
-            'cache' => FALSE
+			'cache' => $this->registry["cache"]
+            //'cache' => FALSE
 		));
 
 		$loader = new Twig_Loader_Filesystem($this->_config["path"]["root"] . $this->_config['path']['templates']);
 		$templates = new Twig_Environment($loader, array(
-			//'cache' => $this->registry["cache"],
-            'cache' => FALSE
+			'cache' => $this->registry["cache"],
+            //'cache' => FALSE
 		));
         
         $this->registry->set('layouts', $layouts);
