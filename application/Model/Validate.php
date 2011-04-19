@@ -55,7 +55,7 @@ class Model_Validate extends Model_Index {
     public function name($name) {
         $err = null;
         
-        if ( !preg_match( '/^[0-9A-Za-zА-Яа-я_-]{1,128}$/', $name ) ) {
+        if ( !preg_match( '/^[0-9A-Za-zА-Яа-я_-]{1,128}$/ui', $name ) ) {
 			$err = 'Поле "Имя" должно содержать от 1 до 128 символов. Из специальных символов разрешается использовать символы: "-", "_"';
 		}
 
@@ -67,7 +67,7 @@ class Model_Validate extends Model_Index {
     public function soname($soname) {
         $err = null;
         
-        if ( !preg_match( '/^[0-9A-Za-zА-Яа-я_-]{1,128}$/', $soname ) ) {
+        if ( !preg_match( '/^[0-9A-Za-zА-Яа-я_-]{1,128}$/ui', $soname ) ) {
 			$err = 'Поле "Фамилия" должно содержать от 1 до 128 символов. Из специальных символов разрешается использовать символы: "-", "_"';
 		}
         

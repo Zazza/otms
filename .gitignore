@@ -1,4 +1,5 @@
 public/upload/*
+application/View/cache/*
 !public/upload/.htaccess
 /logs
 /tmp

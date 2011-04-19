@@ -53,6 +53,7 @@ class Controller_Settings_Users extends Controller_Index {
                                 }
 
                                 if (count($err) == 0) {
+                                    
                                     $uid = $this->user->editUser($args[2], $_POST["name"], $_POST["soname"], $_POST["email"]);
                                     if ($data["pass"] != $_POST["pass"]) {
                                         $this->user->editUserPass($args[2], $_POST["pass"]);
@@ -87,6 +88,7 @@ class Controller_Settings_Users extends Controller_Index {
                         if ($txt = $validate->password($_POST["pass"])) { $err[] = $txt; };
 
                         if (count($err) == 0) {
+                            
                             $uid = $this->user->addUser($_POST["login"], $_POST["pass"], $_POST["name"], $_POST["soname"], $_POST["email"]);
                             $this->user->addUserPriv($uid, $_POST["priv"], $_POST["group_name"]);
                             

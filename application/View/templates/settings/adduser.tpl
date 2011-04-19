@@ -16,7 +16,7 @@
 
 <p style="margin: 7px 0">
     <label><input name='priv' value="admin" type='radio' {% if post.priv == "admin" %} checked {% endif %} />&nbsp;<b>Администратор</b></label>
-    <label><input name='priv' value="null" type='radio' {% if post.priv == null  %} checked {% endif %} />&nbsp;<b>Обычный пользователь</b></label>
+    <label><input name='priv' value="null" type='radio' {% if post.priv == FALSE  %} checked {% endif %} />&nbsp;<b>Обычный пользователь</b></label>
     <label><input name='priv' value="readonly" type='radio' {% if post.priv == "readonly" %} checked {% endif %} />&nbsp;<b>Только чтение</b></label>
 </p>
 
