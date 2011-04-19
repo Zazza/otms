@@ -71,14 +71,15 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
     }
     
     public function findObj($params) {
-        $find = $params["find"];
+        $tfind = $params["find"];
         
+        $find = new Model_Find($this->registry);
         $task = new Model_Task($this->registry);
         
         $findSess = & $_SESSION["find"];
         
-        if (isset($find)) {
-            $findSess["string"] = $find;
+        if (isset($tfind)) {
+            $findSess["string"] = $tfind;
         } else {
             if (!isset($findSess["string"])) {
                 $findSess["string"] = "";
@@ -90,13 +91,13 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
             $text = substr($findSess["string"], 0, 64);
 			$text = explode(" ", $text);
 
-            $find = $task->findObjects($text);
+            $tfind = $find->findObjects($text);
             
-            if (count($find) == 0) {
+            if (count($tfind) == 0) {
                 echo "<p style='color: #777; margin-left: 20px'>Ничего не найдено</p>";
             }
    
-            foreach ($find as $part) {
+            foreach ($tfind as $part) {
                 echo '<div style="margin-bottom: 20px">';
                 
                 $obj = $task->getShortObject($part["id"]);
