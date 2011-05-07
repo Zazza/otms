@@ -1,33 +1,16 @@
-OTMS HelpDesk v.0.31
-
-Ведётся разработка следующей версии, которая будет включать в себя множество изменений и дополнений. Промежуточных версий не планируется.
+HelpDesk "object&task management system" v.0.5
 
 Требования:
 1) PHP старше 5.1 версии
-    Модули:
-        pdo_mysql
-        mod_rewrite
-2) MYSQL (поддержка InnoDB, MyISAM для полнотекстового поиска в некоторых базах)
+2) Модули: pdo_mysql, mod_rewrite, mbstring, json, curl
+2) MYSQL (InnoDB, MyISAM для полнотекстового поиска в некоторых базах)
 
-Установка:
-1) Директория public - должна соответствовать параметрам DirectoryRoot из Apache или root из Nginx
-2) Директории library и application, лежат на уровень выше. Там обычно распологаются директории logs и tmp
-3) scheme.sql - структура БД, не забываем импортировать. В файле содержится единственный пользователь для входа admin с паролем admin
-4) Правим файл /application/settings/config.php:
+На директории /upload и /system/View/cache/ необходимо выставить права на запись.
 
-$config['db'] = array(
-'adapter' => 'mysql',
-'host' => 'localhost',
-'username' => '', // имя пользователя БД
-'password' => '', // пароль пользователя БД
-'dbname' => '' // имя таблицы
-);
+Настройки:
 
+/application/settings/config.php:
+$config['year'] = array('2011', '2012'); // для календаря
 $config['mailSender'] = 'helpdesk@example.com'; // почта, для рассылки уведомлений HelpDesk
 
-UPDATE:
-Если планруется обновление до версии 0.3 с более ранних, необходимо выполнить:
-mysql> ALTER TABLE `users_priv` ADD `readonly` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `admin`;
-mysql> ALTER TABLE `users_priv` CHANGE `admin` `admin` TINYINT( 1 ) NOT NULL DEFAULT '0'
-
-По-умолчанию включен кеш шаблонизатора, поэтому, если меняются шаблоны, не забыть очистить папку /application/View/cache/
+По-умолчанию включен кеш шаблонизатора Twig, поэтому, если меняются шаблоны, не забыть очистить папку /system/View/cache/

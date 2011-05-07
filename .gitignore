@@ -1,5 +1,3 @@
-public/upload/*
-application/View/cache/*
-!public/upload/.htaccess
-/logs
-/tmp
+upload/*
+system/View/cache/*
+!upload/.htaccess

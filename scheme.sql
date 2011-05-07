@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Апр 16 2011 г., 17:42
+-- Время создания: Май 07 2011 г., 11:00
 -- Версия сервера: 5.1.49
 -- Версия PHP: 5.3.3-7+squeeze1
 
@@ -29,7 +29,14 @@ CREATE TABLE IF NOT EXISTS `group_tt` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Дамп данных таблицы `group_tt`
+--
+
+INSERT INTO `group_tt` (`id`, `name`) VALUES
+(1, 'закрыто');
 
 -- --------------------------------------------------------
 
@@ -40,10 +47,17 @@ CREATE TABLE IF NOT EXISTS `group_tt` (
 CREATE TABLE IF NOT EXISTS `objects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `template` int(11) NOT NULL,
+  `typeid` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `template` (`template`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  KEY `template` (`template`),
+  KEY `typeid` (`typeid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `objects`
+--
+
 
 -- --------------------------------------------------------
 
@@ -59,7 +73,31 @@ CREATE TABLE IF NOT EXISTS `objects_advanced` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `who` (`who`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `objects_advanced`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `objects_tags`
+--
+
+CREATE TABLE IF NOT EXISTS `objects_tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `oaid` int(11) NOT NULL,
+  `tag` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `oaid` (`oaid`,`tag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `objects_tags`
+--
+
 
 -- --------------------------------------------------------
 
@@ -75,7 +113,12 @@ CREATE TABLE IF NOT EXISTS `objects_vals` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `oid` (`oid`,`fid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `objects_vals`
+--
+
 
 -- --------------------------------------------------------
 
@@ -88,7 +131,12 @@ CREATE TABLE IF NOT EXISTS `templates` (
   `name` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `templates`
+--
+
 
 -- --------------------------------------------------------
 
@@ -103,7 +151,33 @@ CREATE TABLE IF NOT EXISTS `templates_fields` (
   `main` tinyint(4) NOT NULL DEFAULT '0',
   `expand` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `templates_fields`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `templates_type`
+--
+
+CREATE TABLE IF NOT EXISTS `templates_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tid` int(11) NOT NULL,
+  `pid` int(11) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tid` (`tid`),
+  KEY `pid` (`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `templates_type`
+--
+
 
 -- --------------------------------------------------------
 
@@ -122,7 +196,12 @@ CREATE TABLE IF NOT EXISTS `troubles` (
   `ending` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `gid` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `troubles`
+--
+
 
 -- --------------------------------------------------------
 
@@ -137,8 +216,14 @@ CREATE TABLE IF NOT EXISTS `troubles_deadline` (
   `opening` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deadline` int(10) unsigned NOT NULL DEFAULT '0',
   `iteration` int(10) unsigned NOT NULL DEFAULT '0',
+  `timetype_iteration` varchar(8) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `troubles_deadline`
+--
+
 
 -- --------------------------------------------------------
 
@@ -153,7 +238,12 @@ CREATE TABLE IF NOT EXISTS `troubles_discussion` (
   `text` text NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `troubles_discussion`
+--
+
 
 -- --------------------------------------------------------
 
@@ -166,7 +256,12 @@ CREATE TABLE IF NOT EXISTS `troubles_responsible` (
   `tid` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `troubles_responsible`
+--
+
 
 -- --------------------------------------------------------
 
@@ -180,6 +275,11 @@ CREATE TABLE IF NOT EXISTS `troubles_spam` (
   `uid` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Дамп данных таблицы `troubles_spam`
+--
+
 
 -- --------------------------------------------------------
 
@@ -195,16 +295,19 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(64) NOT NULL,
   `soname` varchar(64) NOT NULL,
   `email` varchar(64) NOT NULL,
+  `notify` tinyint(4) NOT NULL,
+  `time_notify` time NOT NULL DEFAULT '08:00:00',
+  `last_notify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login` (`login`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `login`, `pass`, `hash`, `name`, `soname`, `email`) VALUES
-(1, 'admin', 'c3284d0f94606de1fd2af172aba15bf3', '', '', '', '');
+INSERT INTO `users` (`id`, `login`, `pass`, `hash`, `name`, `soname`, `email`, `notify`, `time_notify`, `last_notify`) VALUES
+(1, 'admin', 'c3284d0f94606de1fd2af172aba15bf3', '', 'admin', 'admin', 'admin@example.com', 0, '08:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -217,13 +320,14 @@ CREATE TABLE IF NOT EXISTS `users_group` (
   `name` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Дамп данных таблицы `users_group`
 --
 
-INSERT INTO `users_group` (`id`, `name`) VALUES (1, 'Администраторы');
+INSERT INTO `users_group` (`id`, `name`) VALUES
+(1, 'Админы');
 
 -- --------------------------------------------------------
 
@@ -235,11 +339,13 @@ CREATE TABLE IF NOT EXISTS `users_priv` (
   `id` int(11) NOT NULL,
   `admin` tinyint(1) NOT NULL DEFAULT '0',
   `readonly` tinyint(1) NOT NULL DEFAULT '0',
-  `group` smallint(6) NOT NULL
+  `group` smallint(6) NOT NULL,
+  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `users_priv`
 --
 
-INSERT INTO `users_priv` (`id`, `admin`, `group`) VALUES (1, 1, 1);
+INSERT INTO `users_priv` (`id`, `admin`, `readonly`, `group`) VALUES
+(1, 1, 0, 2);
