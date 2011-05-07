@@ -1,3 +1,0 @@
-upload/*
-system/View/cache/*
-!upload/.htaccess
