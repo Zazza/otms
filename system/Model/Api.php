@@ -25,8 +25,8 @@ class Model_Api extends Model_Index {
         if (count($user) > 0) {
             if ($user[0]["id"] == 1) {
                 
-                $task = new Model_Task($this->registry);
-                if (!$obj = $task->getObject($oid)) {
+                $object = new Model_Object($this->registry);
+                if (!$obj = $object->getObject($oid)) {
                     $this->err = "<p>Объект не найден!</p>";
                     
                     return FALSE;

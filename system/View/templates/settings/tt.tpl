@@ -2,14 +2,10 @@
 
 <table cellpadding="3" cellspacing="3">
 <tr>
-<td align="center" style="font-weight: bold; font-size: 10px">удалить</td>
 <td align="center" style="font-weight: bold; font-size: 10px">изменить</td>
 <td align="center" style="font-weight: bold; font-size: 10px">имя группы</td>
 {% for part in group %}
 <tr>
-<td align="center" style="border: 1px solid #ccc">
-    <a style="cursor: pointer" onclick="delGroupTtConfirm({{ part.id }})"><img style="vertical-align: middle" src="{{ uri }}img/delete.png" alt="" border="0" /></a>
-</td>
 
 <td align="center" style="border: 1px solid #ccc">
     <a href="{{ uri }}settings/tt/edit/{{ part.id }}/"><img style="vertical-align: middle" src="{{ uri }}img/edititem.gif" alt="" border="0" /></a>

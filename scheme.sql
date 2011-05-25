@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.7deb3
+-- version 3.3.9
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Май 07 2011 г., 11:00
--- Версия сервера: 5.1.49
--- Версия PHP: 5.3.3-7+squeeze1
+-- Время создания: Май 25 2011 г., 10:57
+-- Версия сервера: 5.5.8
+-- Версия PHP: 5.3.5
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -16,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- База данных: `tt`
+-- База данных: `tt3`
 --
 
 -- --------------------------------------------------------
@@ -195,6 +195,8 @@ CREATE TABLE IF NOT EXISTS `troubles` (
   `opening` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ending` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `gid` int(11) NOT NULL DEFAULT '0',
+  `close` tinyint(4) NOT NULL DEFAULT '0',
+  `cuid` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -255,6 +257,8 @@ CREATE TABLE IF NOT EXISTS `troubles_responsible` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tid` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
+  `gid` int(11) NOT NULL DEFAULT '0',
+  `all` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

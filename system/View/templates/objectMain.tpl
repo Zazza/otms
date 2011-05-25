@@ -1,9 +1,9 @@
-<div class="obj" id="win{{ obj.0.id }}" style="background-color: #EBF3FE; border: 1px solid #777">
+<div class="obj" id="win{{ obj.0.id }}">
 
 <p style="margin-bottom: 10px; padding: 2px 0; font-family: Arial; font-size: 16px; font-weight: bold; overflow: hidden">
-<span style="float: right; font-weight: bold"><a href="{{ uri }}objects/{{ obj.0.id }}/">Объект №{{ obj.0.id }}</a></span>
+<span style="float: right; font-weight: bold"><a href="{{ uri }}objects/{{ obj.0.id }}/" class="title">Объект №{{ obj.0.id }}</a></span>
 {% if ui.readonly == 0 %}
-<img src="{{ uri }}img/plus-button.png" alt="plus" border="0" style="vertical-align: middle" />&nbsp;<a href="{{ uri }}tt/add/?oid={{ obj.0.id }}">добавить задачу</a>
+<a href="{{ uri }}tt/add/?oid={{ obj.0.id }}" class="title"><img src="{{ uri }}img/plus-button.png" alt="plus" border="0" style="margin-right: 5px" />добавить задачу</a>
 {% endif %}
 </p>
 

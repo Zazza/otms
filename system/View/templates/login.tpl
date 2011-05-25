@@ -11,3 +11,8 @@
 <p><input type="submit" name="submit" value="Войти" /></p>
 </form>
 </div>
+
+<div style="margin: 80px 0 0 350px">
+<p>логин/пароль для входа <b>readonly/readonly</b></p>
+<p>Пользователь readonly! Большая часть функциональночти не доступна.</p>
+</div>

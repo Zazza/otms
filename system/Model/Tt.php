@@ -25,7 +25,11 @@ class Model_Tt extends Model_Index {
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
-        return $data[0]["name"];
+        if (count($data) > 0) {
+            return $data[0]["name"];
+        } else {
+            return "Без группы";
+        }
     }
     
     public function addGroups($gname) {
@@ -106,7 +110,7 @@ class Model_Tt extends Model_Index {
 		$res->execute($param);
     }
     
-    public function getTasks($uid) {
+    public function getTasks() {
         $data = array(); $result = array();
         
         $year = date("Y");
@@ -117,14 +121,14 @@ class Model_Tt extends Model_Index {
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
-        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid) ) )
-            AND t.gid = 0
+        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid) ) )
+            AND t.close = 0
             AND td.opening <= NOW()
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $uid);
+		$param = array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -176,48 +180,22 @@ class Model_Tt extends Model_Index {
         return $result;
     }
     
-    public function getNumAllTasks() {
-        $data = FALSE;
-        
-		$sql = "SELECT COUNT(DISTINCT(t.id)) AS count
-        FROM troubles AS t
-        LEFT JOIN users_priv AS u
-        WHERE u.id = :uid
-            AND t.secure = 0
-        ORDER BY t.id DESC
-        LIMIT " . $this->startRow .  ", " . $this->limit;
-		
-		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $this->registry["ui"]["id"]);
-		$res->execute($param);
-		$data = $res->fetchAll(PDO::FETCH_ASSOC);
-
-        return $data[0]["count"];
-    }
-    
     public function getAllTasks() {
         $data = array();
         
-        $sql = "SELECT COUNT(u.id) AS count FROM users_priv AS u WHERE u.id = :uid AND u.admin = 1 LIMIT 1";
-        
-		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $this->registry["ui"]["id"]);
-		$res->execute($param);
-		$admin = $res->fetchAll(PDO::FETCH_ASSOC);
-        
-        if ($admin[0]["count"]) {
+        if ($this->registry["ui"]["admin"]) {
     		$sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id)
             FROM troubles AS t
             LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
             LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
-            WHERE ( (t.secure = 0) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid) ) )
-                AND t.gid = 0
+            WHERE ( (t.secure = 0) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid) ) )
+                AND t.close = 0
                 AND td.opening <= NOW()
             ORDER BY t.id DESC
             LIMIT " . $this->startRow .  ", " . $this->limit;
     		
     		$res = $this->registry['db']->prepare($sql);
-    		$param = array(":uid" => $this->registry["ui"]["id"]);
+    		$param = array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]);
     		$res->execute($param);
     		$data = $res->fetchAll(PDO::FETCH_ASSOC);
             
@@ -234,22 +212,25 @@ class Model_Tt extends Model_Index {
     }
     
     public function getTasksDate($uid, $date) {
+        $user = new Model_User($this->registry);
+        
         $data = array(); $result = array();
         
         $year = date("Y", strtotime($date));
         $month = date("m", strtotime($date));
         $day = date("d", strtotime($date));
         
-        $sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id), t.gid, td.type, td.deadline, td.iteration, td.timetype_iteration, td.opening, t.ending
+        $sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id), t.close, td.type, td.deadline, td.iteration, td.timetype_iteration, td.opening, t.ending
         FROM troubles AS t 
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = td.tid)
-        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid) ) )
+        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid) ) )
         ORDER BY td.opening DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
         
 		$res = $this->registry['db']->prepare($sql);
-		$res->execute(array(":uid" => $uid));
+        $param = array(":uid" => $uid, ":gid" => $user->getGidFromUid($uid));
+		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
         $this->totalPage = $this->registry['db']->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -272,7 +253,7 @@ class Model_Tt extends Model_Index {
                 $days = 1;
             }
             
-            if ($data[$i]["gid"] != "0") {
+            if ($data[$i]["close"] != "0") {
                 $curDay = date("d", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
                 $curMonth = date("m", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
                 $curYear = date("Y", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
@@ -293,8 +274,9 @@ class Model_Tt extends Model_Index {
                     $curDay = date("d", mktime(0, 0, 0, date("m", $start), date("d", $start) + $l, date("Y", $start)));
                     $curMonth = date("m", mktime(0, 0, 0, date("m", $start), date("d", $start) + $l, date("Y", $start)));
                     $curYear = date("Y", mktime(0, 0, 0, date("m", $start), date("d", $start) + $l, date("Y", $start)));
-                    if ($curYear . $curMonth . $curDay <= $year . $month . $day) {
-                        $result[]["id"] = $data[$i]["id"];                        
+                    
+                    if ( ($curYear == $year) and ($curMonth == $month) and ($curDay == $day) ) {
+                        $result[]["id"] = $data[$i]["id"];
                     }
                 } 
             } elseif ($data[$i]["type"] == "2") {
@@ -306,7 +288,7 @@ class Model_Tt extends Model_Index {
                     $curMonth = date("m", mktime(0, 0, 0, date("m", $start) + $inc_month, date("d", $start) + $inc_day, date("Y", $start)));
                     $curYear = date("Y", mktime(0, 0, 0, date("m", $start) + $inc_month, date("d", $start) + $inc_day, date("Y", $start)));
                     
-                    if ( ($curYear == $year) and ($curMonth == $month)  and ($curDay == $day) ) {
+                    if ( ($curYear == $year) and ($curMonth == $month) and ($curDay == $day) ) {
                         $result[]["id"] = $data[$i]["id"];                        
                     }
     
@@ -325,16 +307,16 @@ class Model_Tt extends Model_Index {
     public function getTask($tid) {
         $data = array();
         
-		$sql = "SELECT t.id, t.oid, t.who, t.imp, t.secure, t.text, t.opening AS start, t.ending, t.gid, g.name AS `group`, tr.uid, td.type, td.opening, td.deadline, td.iteration, td.timetype_iteration, ts.id AS spam
+		$sql = "SELECT t.id, t.oid, t.who, t.imp, t.secure, t.text, t.opening AS start, t.ending, t.gid, t.close, g.name AS `group`, t.cuid AS cuid, tr.uid, tr.gid AS rgid, tr.all AS `all`, td.type, td.opening, td.deadline, td.iteration, td.timetype_iteration, ts.id AS spam
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
         LEFT JOIN troubles_spam AS ts ON (ts.tid = t.id)
         LEFT JOIN group_tt AS g ON (t.gid = g.id)
-        WHERE t.id = :tid AND ( (t.secure = 0) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid) ) )";
+        WHERE t.id = :tid AND ( (t.secure = 0) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid) ) )";
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":tid" => $tid, ":uid" => $this->registry["ui"]["id"]);
+		$param = array(":tid" => $tid, ":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -350,7 +332,7 @@ class Model_Tt extends Model_Index {
             $d = strtotime($data[0]["opening"]);
             $deadline = $data[0]["deadline"];
             $expire = date("YmdHis", mktime(date("H", $d), date("i", $d), date("s", $d) + $deadline, date("m", $d), date("d", $d), date("Y", $d)));
-            if ($data[0]["ending"] != "0000-00-00 00:00:00") {
+            if ($data[0]["close"] != 0) {
                 $end = date("YmdHis", strtotime($data[0]["ending"]));
             } else {
                 $end = date("YmdHis");
@@ -373,6 +355,10 @@ class Model_Tt extends Model_Index {
                     $data[0]["deadline"] = "";
                     $data[0]["deadline_date"] = "0";
                 }
+            }
+            
+            if ($data[0]["group"] == "") {
+                $data[0]["group"] = "Без группы";
             }
             
             if ($data[0]["secure"]) {
@@ -407,10 +393,10 @@ class Model_Tt extends Model_Index {
                     $secure = 0;
                 }
                 
-        		$sql = "INSERT INTO troubles (oid, who, imp, secure, text) VALUES (:oid, :who, :imp, :secure, :text)";
+        		$sql = "INSERT INTO troubles (oid, who, imp, secure, text, gid) VALUES (:oid, :who, :imp, :secure, :text, :gid)";
         		
         		$res = $this->registry['db']->prepare($sql);
-        		$param = array(":oid" => $oid, ":who" => $this->registry["ui"]["id"], ":imp" => $post["imp"], ":secure" => $secure, ":text" => $post["task"]);
+        		$param = array(":oid" => $oid, ":who" => $this->registry["ui"]["id"], ":imp" => $post["imp"], ":secure" => $secure, ":text" => $post["task"], ":gid" => $post["ttgid"]);
         		$res->execute($param);
                 
                 $sql = "SELECT id FROM troubles ORDER BY id DESC LIMIT 1";		
@@ -420,15 +406,36 @@ class Model_Tt extends Model_Index {
                 
                 $tid = $tid[0]["id"];
                 
+                // ответственные
                 if (!isset($post["ruser"])) { $post["ruser"] = array(); }
+                if (!isset($post["gruser"])) { $post["gruser"] = array(); }
+                if (!isset($post["rall"])) { $post["rall"] = array(); }
                 
                 foreach($post["ruser"] as $part) {
             		$sql = "INSERT INTO troubles_responsible (tid, uid) VALUES (:tid, :uid)";
             		
             		$res = $this->registry['db']->prepare($sql);
             		$param = array(":tid" => $tid, ":uid" => $part);
-            		$res->execute($param);
+            		@$res->execute($param);
                 }
+                
+                foreach($post["gruser"] as $part) {
+            		$sql = "INSERT INTO troubles_responsible (tid, gid) VALUES (:tid, :gid)";
+            		
+            		$res = $this->registry['db']->prepare($sql);
+            		$param = array(":tid" => $tid, ":gid" => $part);
+            		@$res->execute($param);
+                }
+                
+                if ($post["rall"] == "1") {
+            		$sql = "INSERT INTO troubles_responsible (tid, `all`) VALUES (:tid, 1)";
+            		
+            		$res = $this->registry['db']->prepare($sql);
+            		$param = array(":tid" => $tid);
+            		@$res->execute($param);
+                }
+                // END ответственные
+                
                 
                 if ($post["type"] == "0") {
                     
@@ -460,8 +467,6 @@ class Model_Tt extends Model_Index {
                     }
                 } elseif ($post["type"] == "2") {
 
-                    //$post["itertime"] = $post["itertime"] * 24 * 60 * 60;
-
                     $starttime = $post["startdate_iter"] . " " . $post["starttime_iter"];
 
                     if ($post["timetype_iter"] == "min") {
@@ -482,7 +487,7 @@ class Model_Tt extends Model_Index {
                         
                     }
                 }
-    
+
                 $sql = "INSERT INTO troubles_deadline (tid, type, opening, deadline, iteration, timetype_iteration) VALUES (:tid, :type, :opening, :deadline, :iteration, :timetype_iteration)";
             		
             	$res = $this->registry['db']->prepare($sql);
@@ -505,10 +510,10 @@ class Model_Tt extends Model_Index {
                 $secure = 0;
             }
             
-    		$sql = "UPDATE troubles SET imp = :imp, secure = :secure, text = :text WHERE id = :tid LIMIT 1";
+    		$sql = "UPDATE troubles SET imp = :imp, secure = :secure, text = :text, gid = :gid WHERE id = :tid LIMIT 1";
     		
     		$res = $this->registry['db']->prepare($sql);
-    		$param = array(":tid" => $post["tid"], ":imp" => $post["imp"], ":secure" => $secure, ":text" => $post["task"]);
+    		$param = array(":tid" => $post["tid"], ":imp" => $post["imp"], ":secure" => $secure, ":text" => $post["task"], ":gid" => $post["ttgid"]);
     		$res->execute($param);
             
     		$sql = "DELETE FROM troubles_responsible WHERE tid = :tid";
@@ -516,16 +521,36 @@ class Model_Tt extends Model_Index {
     		$res = $this->registry['db']->prepare($sql);
     		$param = array(":tid" => $tid);
     		$res->execute($param);
-
+            
+            // ответственные
             if (!isset($post["ruser"])) { $post["ruser"] = array(); }
+            if (!isset($post["gruser"])) { $post["gruser"] = array(); }
+            if (!isset($post["rall"])) { $post["rall"] = array(); }
             
             foreach($post["ruser"] as $part) {
         		$sql = "INSERT INTO troubles_responsible (tid, uid) VALUES (:tid, :uid)";
         		
         		$res = $this->registry['db']->prepare($sql);
         		$param = array(":tid" => $tid, ":uid" => $part);
-        		$res->execute($param);
+        		@$res->execute($param);
             }
+            
+            foreach($post["gruser"] as $part) {
+        		$sql = "INSERT INTO troubles_responsible (tid, gid) VALUES (:tid, :gid)";
+        		
+        		$res = $this->registry['db']->prepare($sql);
+        		$param = array(":tid" => $tid, ":gid" => $part);
+        		@$res->execute($param);
+            }
+            
+            if ($post["rall"] == "1") {
+        		$sql = "INSERT INTO troubles_responsible (tid, `all`) VALUES (:tid, 1)";
+        		
+        		$res = $this->registry['db']->prepare($sql);
+        		$param = array(":tid" => $tid);
+        		@$res->execute($param);
+            }
+            // END ответственные
 
             if ($post["type"] == "0") {
                 
@@ -556,7 +581,6 @@ class Model_Tt extends Model_Index {
                     
                 }
             } elseif ($post["type"] == "2") {
-                //$post["itertime"] = $post["itertime"] * 24 * 60 * 60;
 
                 $starttime = $post["startdate_iter"] . " " . $post["starttime_iter"];
 
@@ -622,13 +646,13 @@ class Model_Tt extends Model_Index {
 		$sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id)
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
-        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid) ) )
+        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid) ) )
             AND t.oid = :oid
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $this->registry["ui"]["id"], "oid" => $oid);
+		$param = array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"], "oid" => $oid);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -643,19 +667,19 @@ class Model_Tt extends Model_Index {
         return $data;
     }
     
-    public function getTasksWithoutMe($uid) {
+    public function getTasksAllMe() {
         $data = array();
         
 		$sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id)
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
-        WHERE tr.uid = :uid
-            AND t.gid = 0
+        WHERE (tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid)
+            AND t.close = 0
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $uid);
+		$param = array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -670,32 +694,34 @@ class Model_Tt extends Model_Index {
         return $data;
     }
     
-    public function getNumStatTasks($uid) {
+    public function getNumStatTasks() {
         $sql = "SELECT COUNT(t.id) AS count
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
-        WHERE tr.uid = :uid AND t.gid = 0";
+        WHERE (tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid)
+            AND t.close = 0";
         	
-		$res = $this->registry['db']->prepare($sql);
-		$res->execute(array(":uid" => $uid));
+		$res = $this->registry['db']->prepare($sql);        
+        $param = array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]);
+		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
         return $data[0]["count"];
     }
     
-    public function getMeTasks($uid) {
+    public function getMeTasks() {
         $data = array();
         
 		$sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id)
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         WHERE t.who = :uid
-            AND t.gid = 0
+            AND t.close = 0
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $uid);
+		$param = array(":uid" => $this->registry["ui"]["id"]);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -710,31 +736,31 @@ class Model_Tt extends Model_Index {
         return $data;
     }
     
-    public function getNumMeTasks($uid) {
-        $sql = "SELECT COUNT(id) AS count FROM troubles WHERE who = :uid AND gid = 0";
+    public function getNumMeTasks() {
+        $sql = "SELECT COUNT(id) AS count FROM troubles WHERE who = :uid AND close = 0";
         	
 		$res = $this->registry['db']->prepare($sql);
-		$res->execute(array(":uid" => $uid));
+		$res->execute(array(":uid" => $this->registry["ui"]["id"]));
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
         return $data[0]["count"];
     }
     
-    public function getIterTasks($uid) {
+    public function getIterTasks() {
         $data = array();
         
 		$sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id)
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
-        WHERE tr.uid = :uid
+        WHERE (tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid)
             AND td.type = 2
-            AND t.gid = 0
+            AND t.close = 0
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $uid);
+		$param = array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -749,37 +775,37 @@ class Model_Tt extends Model_Index {
         return $data;
     }
     
-    public function getNumIterTasks($uid) {
+    public function getNumIterTasks() {
         $sql = "SELECT COUNT(t.id) AS count 
         FROM troubles AS t
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
-        WHERE tr.uid = :uid
-            AND t.gid = 0
+        WHERE (tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid)
+            AND t.close = 0
             AND td.type = 2";	
         	
 		$res = $this->registry['db']->prepare($sql);
-		$res->execute(array(":uid" => $uid));
+		$res->execute(array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]));
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
         return $data[0]["count"];
     }
     
-    public function getTimeTasks($uid) {
+    public function getTimeTasks() {
         $data = array();
         
 		$sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id)
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
-        WHERE tr.uid = :uid
+        WHERE (tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid)
             AND td.type = 1
-            AND t.gid = 0
+            AND t.close = 0
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $uid);
+		$param = array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -794,37 +820,37 @@ class Model_Tt extends Model_Index {
         return $data;
     }
     
-    public function getNumTimeTasks($uid) {
+    public function getNumTimeTasks() {
         $sql = "SELECT COUNT(t.id) AS count 
         FROM troubles AS t
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
-        WHERE tr.uid = :uid
-            AND t.gid = 0
+        WHERE (tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid)
+            AND t.close = 0
             AND td.type = 1";	
         	
 		$res = $this->registry['db']->prepare($sql);
-		$res->execute(array(":uid" => $uid));
+		$res->execute(array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]));
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
         return $data[0]["count"];
     }
     
-    public function getNoiterTasks($uid) {
+    public function getNoiterTasks() {
         $data = array();
         
 		$sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT(t.id)
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
-        WHERE tr.uid = :uid
+        WHERE (tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid)
             AND td.type = 0
-            AND t.gid = 0
+            AND t.close = 0
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $uid);
+		$param = array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -839,7 +865,7 @@ class Model_Tt extends Model_Index {
         return $data;
     }
     
-    public function getMonthTasks($year, $month, $uid) {
+    public function getMonthTasks($year, $month) {
         $data = array(); $result = array();
         
         for($i=0; $i<=31; $i++) {
@@ -849,15 +875,15 @@ class Model_Tt extends Model_Index {
             $result[$i]["noiter"]["num"] = 0;
         }
 
-        $sql = "SELECT DISTINCT(t.id), t.gid, td.type, td.deadline, td.iteration, td.timetype_iteration, td.opening, t.ending
+        $sql = "SELECT DISTINCT(t.id), t.close, td.type, td.deadline, td.iteration, td.timetype_iteration, td.opening, t.ending
         FROM troubles AS t 
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = td.tid)
-        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid) ) )
+        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid) ) )
         ORDER BY td.opening";
         
 		$res = $this->registry['db']->prepare($sql);
-		$res->execute(array(":uid" => $uid));
+		$res->execute(array(":uid" => $this->registry["ui"]["id"], ":gid" => $this->registry["ui"]["group"]));
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
 
         for($i=0; $i<count($data); $i++) {
@@ -872,7 +898,7 @@ class Model_Tt extends Model_Index {
                 $days = 1;
             }
             
-            if ($data[$i]["gid"] != 0) {
+            if ($data[$i]["close"] != 0) {
                 $curDay = date("j", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
                 $curMonth = date("m", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
                 $curYear = date("Y", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
@@ -929,11 +955,11 @@ class Model_Tt extends Model_Index {
 		$res->execute(array(":tid" => $tid, ":uid" => $this->registry["ui"]["id"], ":text" => $text));
     }
     
-    public function closeTask($tid, $gid) {
-        $sql = "UPDATE troubles SET ending = NOW(), gid = :gid WHERE id = :tid LIMIT 1";
+    public function closeTask($tid) {
+        $sql = "UPDATE troubles SET ending = NOW(), close = 1, cuid = :cuid WHERE id = :tid LIMIT 1";
         
 		$res = $this->registry['db']->prepare($sql);
-		$res->execute(array(":tid" => $tid, ":gid" => $gid));
+		$res->execute(array(":tid" => $tid, "cuid" => $this->registry["ui"]["id"]));
     }
     
     public function getNobodyTasks() {
@@ -943,7 +969,7 @@ class Model_Tt extends Model_Index {
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         WHERE tr.uid IS NULL
-            AND t.gid = 0
+            AND t.close = 0
         ORDER BY t.id DESC";
 		
 		$res = $this->registry['db']->prepare($sql);
@@ -955,18 +981,56 @@ class Model_Tt extends Model_Index {
     }
     
     public function spamUsers($theme, $tid) {
-        $data = array();
+        $user = new Model_User($this->registry);
         
-		$sql = "SELECT DISTINCT(tr.uid) AS uid, users.email
+        $data1 = array(); $data = array(); $i = 0; $flag = TRUE;
+        
+		$sql = "SELECT tr.uid AS `uid`, users.email, tr.gid AS `gid`, tr.all AS `all`
         FROM troubles_responsible AS tr
         LEFT JOIN users ON (users.id = tr.uid)
-        WHERE tr.tid = :tid
-        ORDER BY tr.uid DESC";
+        WHERE tr.tid = :tid";
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array("tid" => $tid);
 		$res->execute($param);
-		$data1 = $res->fetchAll(PDO::FETCH_ASSOC);
+		$resp = $res->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (count($resp) > 0) {
+            foreach($resp as $part) {
+                if ($part["all"]) {
+                    $flag = FALSE;
+                    
+                    $rusers = array();
+                    
+                    $allusers = $user->getUsersList();
+                    
+                    foreach($allusers AS $uid) {
+                        $data1[$i]["uid"] = $uid["id"];
+                        $data1[$i]["email"] = $uid["email"];
+                        
+                        $i++;
+                    }
+                }
+                
+                if (($part["gid"] != 0) and ($flag)) {
+                    $gusers = $user->getUserInfoFromGroup($part["gid"]);
+                    
+                    foreach($gusers AS $uid) {
+                        $data1[$i]["uid"] = $uid["uid"];
+                        $data1[$i]["email"] = $uid["email"];
+                        
+                        $i++;
+                    }
+                }
+                
+                if (($part["uid"] != 0) and ($flag)) {
+                    $data1[$i]["uid"] = $part["uid"];
+                    $data1[$i]["email"] = $part["email"];
+                    
+                    $i++;
+                }
+            }
+        }
         
 		$sql = "SELECT DISTINCT(ts.uid) AS uid, users.email
         FROM troubles_spam AS ts

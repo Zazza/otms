@@ -11,7 +11,7 @@ class Controller_Find_Tasks extends Controller_Find {
         $this->view->setTitle("Поиск");
        
         $find = new Model_Find($this->registry);
-        $task = new Model_Task($this->registry);
+        $object = new Model_Object($this->registry);
         
         if (isset($this->findSess["string"])) {
             
@@ -44,7 +44,7 @@ class Controller_Find_Tasks extends Controller_Find {
                             $ruser[] = $this->user->getUserInfo($val["uid"]);
                         }
                     
-                        $obj = $task->getShortObject($part["oid"]);
+                        $obj = $object->getShortObject($part["oid"]);
                         
                         $this->view->tt_task(array("ui" => $this->registry["ui"], "data" => $data, "author" => $author, "ruser" => $ruser, "notObj" => true, "obj" => $obj, "numComments" => $numComments, "uid" => $this->registry["ui"]["id"]));
                     }

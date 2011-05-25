@@ -21,17 +21,9 @@ class Model_Login extends Model_Index {
 		
 		if (count($data) == 1) {
             if ($data[0]["pass"] === md5(md5($pass))) {
-                 $hash = md5($this->generateCode(10));
-            
-                 $sql = "UPDATE users SET hash=:hash WHERE login=:login";
-                 
-                 $res = $this->registry['db']->prepare($sql);
-                 $param = array(":hash" => $hash, ":login" => $login);
-                 $res->execute($param);
-            
+
                  $loginSession = & $_SESSION["login"];
                  $loginSession["id"] = $data[0]["id"];
-                 $loginSession["hash"] = $hash;
             
                  return TRUE;
             } else {

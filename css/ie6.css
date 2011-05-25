@@ -12,14 +12,6 @@
     margin-left: 3px; /* increase ie6 margin-left */
 }
 
-#regioncover {
-    padding-top: 3px;
-}
-
-#ldcover {
-    margin-bottom: -9px;
-}
-
 #cat {
     left: -3px;
     position: relative;
@@ -29,8 +21,4 @@
     /*height: auto;*/
     overflow: auto;
     zoom: 1; 
-}
-
-#footerleft {
-    margin-left: 3px;
 }

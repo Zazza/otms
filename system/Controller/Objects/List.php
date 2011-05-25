@@ -4,7 +4,7 @@ class Controller_Objects_List extends Controller_Objects {
     private $tree = array();
     private $templates;
     private $tree_depth = array();
-    private $task = null;
+    private $object = null;
     private $depth = array();
     
     private $mtemplate;
@@ -14,10 +14,10 @@ class Controller_Objects_List extends Controller_Objects {
         
         $this->begin("objects", "list");
         
-        $this->task = new Model_Task($this->registry);
+        $this->object = new Model_Object($this->registry);
         $this->mtemplate = new Model_Template($this->registry);
         
-        $templates = $this->task->getTemplates();
+        $templates = $this->mtemplate->getTemplates();
         $this->templates = $templates;
         
         foreach($templates as $part) {
@@ -36,7 +36,7 @@ class Controller_Objects_List extends Controller_Objects {
                     $val = "пусто";
                 }
                 
-                $this->find .= "<ul><li><div class='obj' style='margin: 0 0 0 10px'>" . $val . "</div></li></ul>";
+                $this->find .= "<ul><li><div style='margin: 0 0 0 10px'>" . $val . "</div></li></ul>";
             }
             if (is_array($val)) {
                 if ($key != "0") {
@@ -71,8 +71,8 @@ class Controller_Objects_List extends Controller_Objects {
             if (isset($_POST["move_confirm"])) {
                 if (isset($_POST["obj"])) {
                     foreach($_POST["obj"] as $key => $val) {
-                        if ($this->task->getTidFromPid($key) == $_POST["tName"]) {
-                            $this->task->moveObj($key, $_POST["tTypeName"]);
+                        if ($this->mtemplate->getTidFromPid($key) == $_POST["tName"]) {
+                            $this->object->moveObj($key, $_POST["tTypeName"]);
                         }
                     }
                 }
@@ -110,19 +110,18 @@ class Controller_Objects_List extends Controller_Objects {
                 
                 $this->view->setMainContent("<p style='margin-bottom: 20px'><b>Последняя выборка</b></p>");
                 
-                $this->task->links = "/list";
+                $this->object->links = "/list";
 
-                $data = $this->task->getObjectsByClause($clauseSess["string"]);
+                $data = $this->object->getObjectsByClause($clauseSess["string"]);
                 
                 $res_tree = null;
 
                 foreach($data as $part) {
-                    if ($obj = $this->task->getShortObject($part["id"])) {
+                    if ($obj = $this->object->getShortObject($part["id"])) {
                         
-                        $template = "<b>" . $obj[0]["tname"] . "</b>";
-                        //$sub = $obj[0]["type_name"];
+                        $template = "[" . $obj[0]["tname"] . "]";
                         $sub = $obj[0]["type_id"];
-                        
+
                         $viewObj = $this->view->render("objects_obj", (array("obj" => $obj, "ui" => $this->registry["ui"])));
 
                         $flag[1] = FALSE;
@@ -163,8 +162,7 @@ class Controller_Objects_List extends Controller_Objects {
                         }
                     } else {
                         if (isset($part["tname"])) {
-                            $template = "<b>" . $part["tname"] . "</b>";
-                            //$sub = $part["type_name"];
+                            $template = "[" . $part["tname"] . "]";
                             $sub = $part["type_id"];
                             
                             if (!isset($res_tree[$template][$sub][0])) {

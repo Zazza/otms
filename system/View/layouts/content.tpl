@@ -8,7 +8,7 @@
 <div id="fm" style="float: left"></div>
 
 <div id="text_area" style="float: left">
-    <textarea id="jHtmlArea" style="width: 500px; height: 220px"></textarea>
+    <textarea id="jHtmlArea" name="textfield" style="width: 500px; height: 220px"></textarea>
     
     <p style="margin-top: 20px" style="display: none" id="tag">
         Теги: <input type="text" id="tags" style="width: 250px" />
@@ -20,19 +20,14 @@
 <div id="findObject" style="display: none; text-align: left" title="Поиск объекта">
 <div style="margin-bottom: 20px">
     <input type="text" name="dFind" id="dFind" />
-    <input type="button" value="Искать" onclick="dFindObj()" />
 </div>
 
 <div id="resFind"></div>
 
 </div>
 
-<div id="ttgroup" style="display: none; text-align: center" title="Переместить в группу">
-<select id="ttgid" name="ttgid" style="margin-top: 10px">
-    {% for part in ttgroups %}
-    <option value="{{ part.id }}">{{ part.name }}</option>
-    {% endfor %}
-</select>
+<div id="ttgroup" style="display: none; text-align: center" title="Закрыть задачу">
+<p>Уверены, что хотите закрыть задачу?</p>
 </div>
 
 <div id="leftBlock">
@@ -61,4 +56,39 @@ $(document).ready(function(){
         }
     })
 })
+
+var string = "";
+
+$("#dFind").keyup(function(e) {
+    firstFind();
+})
+
+function firstFind() {
+    string = $("#dFind").val();
+
+    if (string.length > 3) {
+    $("#resFind").html('<img src="{{ uri }}img/ajax-loader.gif" alt="ajax-loader.gif" border="0" />');
+    
+        if(find.timeout) {
+            clearTimeout(find.timeout);
+        }
+        
+        find.timeout = setTimeout(find, 1000);
+    
+    } else {
+        $("#resFind").html('');
+    }
+}
+
+function find(){
+    var data = "action=findObj&find=" + $("#dFind").val() + "&page=" + window.location.hash;
+    $.ajax({
+    	type: "POST",
+    	url: "{{ uri }}ajax/tt/",
+    	data: data,
+    	success: function(res) {
+            $("#resFind").html(res);
+        }
+    })
+}
 </script>

@@ -53,19 +53,37 @@ class Controller_Tt_Edit extends Controller_Index {
                     
                     $data = $this->tt->getTask($args[1]);
                     
-                    $task = new Model_Task($this->registry);
-                    $obj = $task->getShortObject($data[0]["oid"]);
+                    $object = new Model_Object($this->registry);
+                    $obj = $object->getShortObject($data[0]["oid"]);
                     
                     $issRusers = array(); $k = 0;
                     foreach($data as $part) {
                         
-                        if (($part["uid"]) != null) {                
-                            $row = $this->user->getUserInfo($part["uid"]);
-                            
+                        if (($part["uid"]) != null) {
+                            if (($part["uid"]) != "0") {
+                                $row = $this->user->getUserInfo($part["uid"]);
+                                
+                                $k++;
+                
+                                $issRusers[$k]["desc"] = '<p><span style="font-size: 11px; margin-right: 10px;" id="udesc[' . $row["uid"] . ']">' . $row["name"] . ' ' . $row["soname"] . '</span>';
+                                $issRusers[$k]["desc"] .= '<input id="uhid[' . $row["uid"] . ']" type="hidden" name="ruser[]" value="' . $row["uid"] . '" /></p>';
+                            }
+                        }
+                        
+                        if (($part["rgid"]) != null) {
+                            if (($part["rgid"]) != "0") {
+                                $gname = $this->user->getGroupName($part["rgid"]);
+                                
+                                $k++;
+                                
+                                $issRusers[$k]["desc"] = '<p style="font-size: 11px; margin-right: 10px">' . $gname . '<input type="hidden" name="gruser[]" value="' . $part["rgid"] . '" /></p>';
+                            }
+                        }
+                        
+                        if (($part["all"]) == "1") {
                             $k++;
-            
-                            $issRusers[$k]["desc"] = '<p><span style="font-size: 11px; margin-right: 10px;" id="udesc[' . $row["uid"] . ']">' . $row["name"] . ' ' . $row["soname"] . '</span>';
-                            $issRusers[$k]["desc"] .= '<input id="uhid[' . $row["uid"] . ']" type="hidden" name="ruser[]" value="' . $row["uid"] . '" /></p>';
+                            
+                            $issRusers[$k]["desc"] = '<p style="font-size: 11px; margin-right: 10px">Все<input type="hidden" name="rall" value="1" /></p>';
                         }
                     }
 

@@ -23,9 +23,8 @@ class Controller_Tt_Add extends Controller_Index {
                     if (isset($_POST["selObjHid"])) {
                         $oid = $_POST["selObjHid"];
                     }
-
                     if ($tid = $this->tt->addTask($oid, $_POST)) {
-                        $this->tt->SpamUsers("Новая задача", $tid);
+                       $this->tt->SpamUsers("Новая задача", $tid);
                         
                         $this->view->refresh(array("timer" => "1", "url" => "tt/" . $tid . "/"));
                     } else {
@@ -61,10 +60,10 @@ class Controller_Tt_Add extends Controller_Index {
                     $data[$k]["id"] = 0;
                     $data[$k]["desc"] = "все";
                     
-                    $task = new Model_Task($this->registry);
+                    $object = new Model_Object($this->registry);
                     if (isset($_GET["oid"])) {
                         $oid = $_GET["oid"];
-                        $obj = $task->getShortObject($_GET["oid"]);
+                        $obj = $object->getShortObject($_GET["oid"]);
                     } else {
                         $oid = "";
                         $obj = "";

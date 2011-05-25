@@ -22,6 +22,4 @@ $config['allowedExtensions'] = array();
 
 $config['rgb']=0xFFFFFF;
 $config['quality']=100;
-
-$config['drop'][0] = '.jHtmlArea';
 ?>

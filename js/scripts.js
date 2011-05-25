@@ -15,6 +15,20 @@ function otmsInit(path) {
     url = path;
 }
 
+function htmlarea() {
+    $("#jHtmlArea").htmlarea({
+        toolbar: [
+            ["bold", "italic", "underline", "|", "forecolor"],
+            ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+            ["link", "unlink", "|", "image"]
+            ]});
+}
+
+function clearHtmlArea() {
+    $("#jHtmlArea").text("");
+    $("#jHtmlArea").htmlarea("dispose");
+}
+
 function showFM() {
     $("#fm").show();
     $("#text_area").css("margin-left", "0");
@@ -77,52 +91,6 @@ function delUser(uid) {
 	})
 }
 
-function delGroupTtConfirm(id) {
-	$('<div title="Удаление группы">Удалить?</div>').dialog({
-		modal: true,
-	    buttons: {
-			"Нет": function() { $(this).dialog("close"); },
-			"Да": function() { delGroupTt(id); $(this).dialog("close"); }
-		},
-		width: 240
-	})
-}
-
-function delGroupTt(id) {
-    var data = "action=delGroup&id=" + id;
-	$.ajax({
-		type: "POST",
-		url: url + "ajax/tt/",
-		data: data,
-		success: function(res) {
-            document.location.href = document.location.href;
-		}
-	})
-}
-
-function delGroupKbConfirm(id) {
-	$('<div title="Удаление группы">Удалить?</div>').dialog({
-		modal: true,
-	    buttons: {
-			"Нет": function() { $(this).dialog("close"); },
-			"Да": function() { delGroupKb(id); $(this).dialog("close"); }
-		},
-		width: 240
-	})
-}
-
-function delGroupKb(id) {
-    var data = "action=delGroup&id=" + id;
-	$.ajax({
-		type: "POST",
-		url: url + "ajax/kb/",
-		data: data,
-		success: function(res) {
-            document.location.href = document.location.href;
-		}
-	})
-}
-
 function delTemplateConfirm(id) {
 	$('<div title="Удаление шаблона">Удалить?</div>').dialog({
 		modal: true,
@@ -158,25 +126,14 @@ function getInfo(id) {
 	})
 }
 
-function htmlarea() {
-    $("#jHtmlArea").htmlarea({
-        toolbar: [
-                    ["bold", "italic", "underline", "|", "forecolor"],
-                    ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
-                    ["link", "unlink", "|", "image"]
-                    ]});
-}
-
 function showEditTask(tid) {
     fminit(url + 'fm/');
 
     $('#advinfo #tag').hide();
-    $("#jHtmlArea").text("");
-    htmlarea();
 
     $('#advinfo').dialog({
 		modal: true,
-        close: $("#jHtmlArea").htmlarea("dispose"),
+        close: clearHtmlArea(),
 	    buttons: {
 			"Добавить": function() {
                 var data = "action=addComment&tid=" + tid + "&text=" + $("#jHtmlArea").htmlarea('toHtmlString');
@@ -190,22 +147,20 @@ function showEditTask(tid) {
             	})
             }
 		},
-		width: 820,
-        height: 460
+		width: 700,
+        height: 490
 	});
     
-    htmlarea();
+    htmlarea();   
 }
 
 function showTaskWindow() {
     fminit(url + 'fm/');
 
-    $("#jHtmlArea").val($("#tasktext").html());
-     $('#advinfo #tag').hide();
+    $('#advinfo #tag').hide();
 
     $('#advinfo').dialog({
 		modal: true,
-        close: $("#jHtmlArea").htmlarea("dispose"),
 	    buttons: {
 			"Добавить": function() {
 			     $("#tasktext").show();
@@ -214,28 +169,31 @@ function showTaskWindow() {
                  $(this).dialog("close");
             }
 		},
-		width: 820,
-        height: 460
+		width: 800,
+        height: 450
 	});
     
+    $("#jHtmlArea").val($("#tasktext").html());
     htmlarea();
 }
 
 function showAdvanced(id) {
     fminit(url + 'fm/');
     
+    clearHtmlArea();
+    
     $('#advinfo #tag').show();
 
     $('#advinfo').dialog({
 		modal: true,
-        close: $("#jHtmlArea").htmlarea("dispose"),
+        close: clearHtmlArea(),
 	    buttons: {
 			"Добавить": function() {
                 addAdvanced(id, encodeURIComponent($("#jHtmlArea").htmlarea('toHtmlString')), $("#tags").val());
             }
 		},
-		width: 820,
-        height: 460
+		width: 900,
+        height: 570
 	});
     
     htmlarea();
@@ -254,21 +212,21 @@ function addAdvanced(id, text, tags) {
 }
 
 function editAdv(id, oaid) {
-    fminit(url + 'fm/');
+    fminit(url + 'fm/');         
     
     $('#advinfo #tag').show();
 
     $('#advinfo').dialog({
 		modal: true,
-        close: $("#jHtmlArea").htmlarea("dispose"),
+        close: clearHtmlArea(),
 	    buttons: {
 			"Изменить": function() {
 			     editAdvanced(id, oaid, encodeURIComponent($("#jHtmlArea").htmlarea('toHtmlString')), $("#tags").val());
                  $(this).dialog("close");
             }
 		},
-		width: 820,
-        height: 460
+		width: 900,
+        height: 570
 	});
     
     var data = "action=getAdvanced&id=" + oaid;
@@ -380,20 +338,20 @@ function dFindObj() {
 function closeTask(tid) {
     $('#ttgroup').dialog({
 		modal: true,
-        close: $("#jHtmlArea").htmlarea("dispose"),
 	    buttons: {
-			"Готово": function() {
-			     moveTask(tid, $("#ttgid").val());
+			"Да": function() {
+			     moveTask(tid);
                  $(this).dialog("close");
-            }
+            },
+            "Нет": function() { $(this).dialog("close"); }
 		},
 		width: 200,
-        height: 170
+        height: 150
 	});
 }
 
-function moveTask(tid, gid) {
-    var data = "action=closeTask&tid=" + tid + "&gid=" + gid;
+function moveTask(tid) {
+    var data = "action=closeTask&tid=" + tid;
 	$.ajax({
 		type: "POST",
 		url: url + "ajax/tt/",

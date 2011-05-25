@@ -17,7 +17,7 @@ class Model_Stat extends Model_Index {
         LEFT JOIN users AS u ON (u.id = tr.uid)
         WHERE td.opening >= :start AND t.ending <= :end
             AND t.secure = 0
-            AND t.gid != 0
+            AND t.close = 1
         GROUP BY tr.uid";
         
         $res = $this->registry['db']->prepare($sql);
@@ -49,7 +49,7 @@ class Model_Stat extends Model_Index {
         WHERE td.opening >= :start AND t.ending <= :end
             AND t.secure = 0
             " . $sql . "
-            AND t.gid != 0
+            AND t.close = 1
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
         
@@ -81,14 +81,14 @@ class Model_Stat extends Model_Index {
         LEFT JOIN group_tt AS g ON (g.id = t.gid)
         WHERE td.opening >= :start AND t.ending <= :end
             AND t.secure = 0
-            AND t.gid != 0
+            AND t.close = 1
         GROUP BY t.gid";
         	
         $res = $this->registry['db']->prepare($sql);
         $param = array(":start" => $start, ":end" => $end);
         $res->execute($param);
         $data = $res->fetchAll(PDO::FETCH_ASSOC);
-        
+
         return $data;
     }
     
@@ -104,7 +104,7 @@ class Model_Stat extends Model_Index {
         WHERE td.opening >= :start AND t.ending <= :end
             AND t.secure = 0
             AND t.gid = :gid
-            AND t.gid != 0
+            AND t.close = 1
         ORDER BY t.id DESC
         LIMIT " . $this->startRow .  ", " . $this->limit;
         	

@@ -1,5 +1,5 @@
 <script type="text/javascript">
-$("{{ obj }}").droppable({
+$("#text_area").droppable({
     tolerance: "touch",
     accept: ".fm_pre",
     drop: function(event, ui) {
@@ -10,9 +10,9 @@ $("{{ obj }}").droppable({
         ext = ext.toLowerCase();
         
         if ( (ext == "gif") || (ext == "png") || (ext == "jpg") || (ext == "jpeg") ) {
-            $("#jHtmlArea").htmlarea('pasteHTML', '<a href="{{ path }}' + ui.draggable.text() + '"><img src="{{ dir }}' + ui.draggable.text() + '" alt="image" border="0" /></a>');
+            CKEDITOR.instances.jHtmlArea.setData(CKEDITOR.instances.jHtmlArea.getData() + '<a href="{{ path }}' + ui.draggable.text() + '"><img src="{{ dir }}' + ui.draggable.text() + '" alt="изображение" /></a>');
         } else {
-            $("#jHtmlArea").htmlarea('pasteHTML', '<a href="{{ path }}' + ui.draggable.text() + '">' + ui.draggable.text() + '</a>');
+            CKEDITOR.instances.jHtmlArea.setData(CKEDITOR.instances.jHtmlArea.getData() + '<a href="{{ dir }}' + ui.draggable.text() + '">' + ui.draggable.text() + '</a>');
         }
     }
 });

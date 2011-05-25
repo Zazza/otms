@@ -22,7 +22,6 @@
     {% for template in templates %}
     
     <select name="tType" id="tree_{{ template.id }}" onclick="setTpl()" style="display: none">
-        <option value="0">..</option>
         {% for part in tree[template.id] %}
         <option value="{{ part.id }}">{{ part.name }}</option>
         {% endfor %}

@@ -14,7 +14,7 @@ class Controller_Cron extends Controller_Index {
 
 		if ($flag) {
            
-    	    $task = new Model_Task($this->registry);
+    	    $object = new Model_Object($this->registry);
             
             $users = $this->user->getUsersList();
            
@@ -35,7 +35,7 @@ class Controller_Cron extends Controller_Index {
                                     $notify[$i]["text"] = $data[0]["text"];
                                     
                                     $nobj = "";
-                                    $obj = $task->getShortObject($data[0]["oid"]);
+                                    $obj = $object->getShortObject($data[0]["oid"]);
                                     foreach($obj as $val) {
                                         if ($val["main"]) {
                                             $nobj .= "<b>" . $val["field"] . ":</b> " . $val["val"] . " ";

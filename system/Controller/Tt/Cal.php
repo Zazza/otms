@@ -12,10 +12,10 @@ class Controller_Tt_Cal extends Controller_Index {
             
             $this->view->setLeftContent($this->view->render("left_tt", array("ui" => $this->registry["ui"])));
             
-            $allmytask = $this->tt->getNumStatTasks($this->registry["ui"]["id"]);
-            $allmetask = $this->tt->getNumMeTasks($this->registry["ui"]["id"]);
-            $itertask = $this->tt->getNumIterTasks($this->registry["ui"]["id"]);
-            $timetask = $this->tt->getNumTimeTasks($this->registry["ui"]["id"]);
+            $allmytask = $this->tt->getNumStatTasks();
+            $allmetask = $this->tt->getNumMeTasks();
+            $itertask = $this->tt->getNumIterTasks();
+            $timetask = $this->tt->getNumTimeTasks();
          
             $this->view->tt_cal(array("ui" => $this->registry["ui"], "day" => date("d"), "month" => date("m"), "year" => date("Y"), "allmytask" => $allmytask, "allmetask" => $allmetask, "itertask" => $itertask, "timetask" => $timetask, "calYear" => $this->registry["calYear"]));
         }

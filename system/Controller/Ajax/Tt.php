@@ -14,15 +14,15 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
     public function delTemplate($params) {
         $id = $params["id"];
         
-        $task = new Model_Task($this->registry);
-        $task->delTemplate($id);
+        $tpl = new Model_Template($this->registry);
+        $tpl->delTemplate($id);
     }
     
     public function getTemplateFields($params) {
         $id = $params["id"];
         
-        $task = new Model_Task($this->registry);
-        $fields = $task->getTypeTemplate($id);
+        $tpl = new Model_Template($this->registry);
+        $fields = $tpl->getTypeTemplate($id);
 
         echo $this->view->render("objects_fields", array("fields" => $fields));
     }
@@ -30,8 +30,8 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
     public function getInfo($params) {
         $id = $params["id"];
         
-        $task = new Model_Task($this->registry);
-        $data = $task->getObject($id);
+        $object = new Model_Object($this->registry);
+        $data = $object->getObject($id);
 
         echo $this->view->render("objectInfo", array("data" => $data));
     }
@@ -41,16 +41,16 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
         $text = $params["text"];
         $tags = htmlspecialchars($params["tags"]);
         
-        $task = new Model_Task($this->registry);
+        $advinfo = new Model_Ai($this->registry);
 
-        $oaid = $task->addAdvanced($id, $text);
+        $oaid = $advinfo->addAdvanced($id, $text);
         
         $arr = explode(",", $tags);
 		$arr = array_unique($arr);
         foreach($arr as $part) {
             $tag = trim($part);
             if ($tag != "") {
-                $task->addTags($oaid, $tag);
+                $advinfo->addTags($oaid, $tag);
             }
         }
     }
@@ -58,19 +58,19 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
     public function delAdv($params) {
         $id = $params["id"];
         
-        $task = new Model_Task($this->registry);
+        $advinfo = new Model_Ai($this->registry);
         
-        $task->delAdvanced($id);
+        $advinfo->delAdvanced($id);
     }
     
     public function getAdvanced($params) {
         $id = $params["id"];
         
-        $task = new Model_Task($this->registry);
+        $advinfo = new Model_Ai($this->registry);
         
-        $arr = $task->getTags($id);
+        $arr = $advinfo->getTags($id);
         $ai["tags"] = implode(", ", $arr);
-        $ai["adv"] = $task->getAdvanced($id);
+        $ai["adv"] = $advinfo->getAdvanced($id);
 
         echo json_encode($ai);
     }
@@ -80,17 +80,17 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
         $text = $params["text"];
         $tags = htmlspecialchars($params["tags"]);
         
-        $task = new Model_Task($this->registry);
+        $advinfo = new Model_Ai($this->registry);
         
-        $task->editAdvanced($id, $text);
-        $task->changeTags($id, $tags);
+        $advinfo->editAdvanced($id, $text);
+        $advinfo->changeTags($id, $tags);
     }
     
     public function findObj($params) {
         $tfind = $params["find"];
         
         $find = new Model_Find($this->registry);
-        $task = new Model_Task($this->registry);
+        $object = new Model_Object($this->registry);
         
         $findSess = & $_SESSION["find"];
         
@@ -116,7 +116,7 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
             foreach ($tfind as $part) {
                 echo '<div style="margin-bottom: 20px">';
                 
-                $obj = $task->getShortObject($part["id"]);
+                $obj = $object->getShortObject($part["id"]);
                 foreach($obj as $val) {
                     echo "<p><b>" . $val["field"] . ":</b> " . $val["val"] . "</p>";
 
@@ -144,9 +144,8 @@ class Controller_Ajax_Tt extends Controller_Ajax_Index {
     
     public function closeTask($params) {
         $tid = $params["tid"];
-        $gid = $params["gid"];
         
-        $this->tt->closeTask($tid, $gid);
+        $this->tt->closeTask($tid);
         
         $this->tt->SpamUsers("Задача закрыта", $tid);
     }

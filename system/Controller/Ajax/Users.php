@@ -28,21 +28,12 @@ class Controller_Ajax_Users extends Controller_Ajax_Index {
             echo '<input id="uhid[' . $data["uid"] . ']" type="hidden" name="ruser[]" value="' . $data["uid"] . '" /></p>';
             
         } elseif ($type == "g") {
-            
-            $data = $this->user->getUserInfoFromGroup($id);
-            foreach ($data as $part) {
-                echo "<p><span id='udesc[" . $part["uid"] . "]' style='font-size: 11px; margin-right: 10px'>" . $part["name"] . " " . $part["soname"] . "</span>";
-                echo '<input id="uhid[' . $part["uid"] . ']" type="hidden" name="ruser[]" value="' . $part["uid"] . '" /></p>';
-            }
-            
+
+            $gname = $this->user->getGroupName($id);
+            echo '<p style="font-size: 11px; margin-right: 10px">' . $gname . '<input type="hidden" name="gruser[]" value="' . $id . '" /></p>';
         } elseif ($type == "all") {
-            
-            $data = $this->user->getUsersList();
-            foreach ($data as $part) {
-                echo "<p><span id='udesc[" . $part["id"] . "]' style='font-size: 11px; margin-right: 10px'>" . $part["name"] . " " . $part["soname"] . "</span>";
-                echo '<input id="uhid[' . $part["id"] . ']" type="hidden" name="ruser[]" value="' . $part["id"] . '" /></p>';
-            }
-            
+
+            echo '<p style="font-size: 11px; margin-right: 10px">Все<input type="hidden" name="rall" value="1" /></p>';
         }
     }
     

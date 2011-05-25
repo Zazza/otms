@@ -38,7 +38,7 @@ class View_Index {
 	}
 
 	public function __call($name, $params) {
-        $param = array("sitename" => $this->registry["siteName"], "uri" => $this->registry["uri"], "args" => $this->registry["args"]);
+        $param = array("sitename" => $this->registry["siteName"], "uri" => $this->registry["uri"], "args" => $this->registry["args"], "registry" => $this->registry);
         
 		$template = $this->twig->loadTemplate($this->getTemplate($name));
 
@@ -52,7 +52,7 @@ class View_Index {
 	}
 	
 	public function render($name, $params) {
-        $param = array("sitename" => $this->registry["siteName"], "uri" => $this->registry["uri"], "args" => $this->registry["args"]);
+        $param = array("sitename" => $this->registry["siteName"], "uri" => $this->registry["uri"], "args" => $this->registry["args"], "registry" => $this->registry);
         
 		$template = $this->twig->loadTemplate($this->getTemplate($name));
 

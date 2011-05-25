@@ -150,10 +150,7 @@ class Ajax extends Main {
 			}
 		};
         
-        $drop = '';
-        foreach($this->_config["drop"] as $part) {
-            $drop .= $this->render("dropjHtmlArea", array("obj" => $part, "dir" => $this->_config["url"] . "../" . $_thumb, "path" => $this->_config["url"] . "../" . $dir));
-        };
+        $drop = $this->render("dropjHtmlArea", array("dir" => $this->_config["url"] . "../" . $_thumb, "path" => $this->_config["url"] . "../" . $dir));
         
         if (($total / 1024) > 1) { $total = round($total / 1024, 2) . "&nbsp;Кб"; } else { $total = round($total, 2) . "&nbsp;Б"; };
     	if (($total / 1024) > 1) { $total = round($total / 1024, 2) . "&nbsp;Мб"; };

@@ -32,7 +32,7 @@ class Controller_Ajax_Index {
         $month = htmlspecialchars($params["month"]);
         $year = htmlspecialchars($params["year"]);
         
-        $data = $this->tt->getMonthTasks($year, $month, $this->registry["ui"]["id"]);
+        $data = $this->tt->getMonthTasks($year, $month);
         foreach($data as $key=>$value) {
             if ($value["close"]["num"] > 0) {
                 $close = '<span style=" margin-right: 10px"><img border="0" style="vertical-align: middle" alt="" src="' . $this->registry["uri"] . 'img/flag.png"><b>' . $value["close"]["num"] . '</b></span>';

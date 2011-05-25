@@ -11,7 +11,8 @@ class Controller_Find_Objects extends Controller_Find {
         $this->view->setTitle("Поиск");
 
         $find = new Model_Find($this->registry);
-        $task = new Model_Task($this->registry);
+        $object = new Model_Object($this->registry);
+        $ai = new Model_Ai($this->registry);
         
         if (isset($this->findSess["string"])) {
             
@@ -34,10 +35,10 @@ class Controller_Find_Objects extends Controller_Find {
                 
                 foreach($findArr as $part) {
                     
-                    $numTroubles = $task->getNumTroubles($part["id"]);
-                    $obj = $task->getShortObject($part["id"]);
-                    $advInfo = $task->getAdvancedInfo($part["id"]);
-                    $numAdvInfo = $task->getNumAdvancedInfo($part["id"]);
+                    $numTroubles = $object->getNumTroubles($part["id"]);
+                    $obj = $object->getShortObject($part["id"]);
+                    $advInfo = $ai->getAdvancedInfo($part["id"]);
+                    $numAdvInfo = $ai->getNumAdvancedInfo($part["id"]);
                     $this->view->objectMain(array("ui" => $this->registry["ui"], "obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles));
                 }
             

@@ -22,7 +22,21 @@ class Controller_Tt_Show extends Controller_Index {
                         $author = $this->user->getUserInfo($data[0]["who"]);
                         
                         foreach($data as $part) {
-                            $ruser[] = $this->user->getUserInfo($part["uid"]);
+                            if (isset($part["uid"])) {
+                                if ($part["uid"] != 0) {
+                                    $ruser[] = $this->user->getUserInfo($part["uid"]);
+                                }
+                            }
+                            
+                            if (isset($part["rgid"])) {
+                                if ($part["rgid"] != 0) {
+                                    $ruser[]["name"] = "<span style='color: #5D7FA6'><b>" . $this->user->getGroupName($part["rgid"]) . "</b></span>";
+                                }
+                            }
+                            
+                            if ($part["all"] == 1) {
+                                $ruser[]["name"] = "<span style='color: #D9A444'><b>Все</b></span>";
+                            }
                         }
                         
                         $group = null;
@@ -30,13 +44,14 @@ class Controller_Tt_Show extends Controller_Index {
                             $group = $this->tt->getGroupName($data[0]["gid"]);
                         }
                     
-                        $task = new Model_Task($this->registry);
+                        $object = new Model_Object($this->registry);
+                        $ai = new Model_Ai($this->registry);
                         
-                        if ($obj = $task->getShortObject($data[0]["oid"])) {
+                        if ($obj = $object->getShortObject($data[0]["oid"])) {
                             
-                            $numTroubles = $task->getNumTroubles($data[0]["oid"]);
-                            $advInfo = $task->getAdvancedInfo($data[0]["oid"]);
-                            $numAdvInfo = $task->getNumAdvancedInfo($data[0]["oid"]);
+                            $numTroubles = $object->getNumTroubles($data[0]["oid"]);
+                            $advInfo = $ai->getAdvancedInfo($data[0]["oid"]);
+                            $numAdvInfo = $ai->getNumAdvancedInfo($data[0]["oid"]);
                             $this->view->objectMain(array("ui" => $this->registry["ui"], "obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles, "group" => $group));
                         } else {
                             $this->view->setMainContent("<p>Объект не найден</p>");

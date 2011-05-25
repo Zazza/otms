@@ -10,13 +10,14 @@ class Controller_Objects_Show extends Controller_Objects {
 	public function index($args) {            
         $this->view->setTitle("Объект");
 
-        $task = new Model_Task($this->registry);
+        $object = new Model_Object($this->registry);
+        $ai = new Model_Ai($this->registry);
         
-        if ($obj = $task->getShortObject($args["0"])) {
+        if ($obj = $object->getShortObject($args["0"])) {
             
-            $numTroubles = $task->getNumTroubles($args["0"]);
-            $advInfo = $task->getAdvancedInfo($args["0"]);
-            $numAdvInfo = $task->getNumAdvancedInfo($args["0"]);
+            $numTroubles = $object->getNumTroubles($args["0"]);
+            $advInfo = $ai->getAdvancedInfo($args["0"]);
+            $numAdvInfo = $ai->getNumAdvancedInfo($args["0"]);
             $this->view->objectMain(array("ui" => $this->registry["ui"], "obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles));
         } else {
             $this->view->setMainContent("<p>Объект не найден</p>");

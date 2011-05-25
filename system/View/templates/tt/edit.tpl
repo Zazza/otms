@@ -36,12 +36,25 @@
 
 </div>
 
+<div style="border: 1px solid #AAA; padding: 10px; margin-bottom: 10px">
+
+<p style="margin-bottom: 10px"><b>3. Группа</b></p>
+
+<select id="ttgid" name="ttgid" style="margin-top: 10px">
+    {% for part in registry.ttgroups %}
+    <option value="0">Без группы</option>
+    <option value="{{ part.id }}" {% if data.0.gid == part.id %}selected="selected"{% endif %}>{{ part.name }}</option>
+    {% endfor %}
+</select>
+
+</div>
+
 
 
 <div style="border: 1px solid #AAA; padding: 10px; margin-bottom: 10px; overflow: hidden">
 
 <div style="float: left; width: 300px">
-<p style="margin-bottom: 10px"><b>3. Назначение ответственных</b></p>
+<p style="margin-bottom: 10px"><b>4. Назначение ответственных</b></p>
 
 <p style="margin-bottom: 5px">
     <select id="ruser">
@@ -49,12 +62,12 @@
     
     {% if part.type == "all" %}
         {% set string = 'все пользователи' %}
-        {% set style = 'style="color: red; margin: 5px 0"' %}
+        {% set style = 'style="color: #D9A444; margin: 5px 0"' %}
     {% endif %}
     
     {% if part.type == "g" %}
         {% set string = part.desc %}
-        {% set style = 'style="color: green; margin: 5px 0"' %}
+        {% set style = 'style="color: #5D7FA6; margin: 5px 0"' %}
     {% endif %}
     
     {% if part.type == "u" %}
@@ -82,7 +95,7 @@
 
 <div style="border: 1px solid #AAA; padding: 10px; margin-bottom: 10px">
 
-<p style="margin-bottom: 10px"><b>4. Важность</b></p>
+<p style="margin-bottom: 10px"><b>5. Важность</b></p>
 
 <select name="imp">
     <option value="1" {% if data.0.imp == 1 %}selected="selected"{% endif %}>1</option>
@@ -99,7 +112,7 @@
 <div style="border: 1px solid #AAA; padding: 10px; margin-bottom: 10px; overflow: hidden">
 
 <div style="float: left; width: 300px">
-<p style="margin-bottom: 10px"><b>5. Сроки</b></p>
+<p style="margin-bottom: 10px"><b>6. Сроки</b></p>
 
 <p><b>Переодичность</b></p>
 <select id="type" name="type" onchange="changeType()">

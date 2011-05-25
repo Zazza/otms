@@ -37,15 +37,16 @@ class Controller_Kb extends Controller_Index {
         if ($this->registry["auth"]) {
             $this->view->setTitle("Теги");
            
-            $task = new Model_Task($this->registry);
+            $advinfo = new Model_Ai($this->registry);
+            $tpl = new Model_Template($this->registry);
             
             if (isset($_GET["tag"])) {
-                $ai = $task->getAIFromTag($_GET["tag"]);
+                $ai = $advinfo->getAIFromTag($_GET["tag"]);
                 
                 $this->view->tags_ai(array("tag" => $_GET["tag"], "ai" => $ai, "ui" => $this->registry["ui"]));
             } else {
-                $templates = $task->getTemplates();
-                $list = $task->getAi();
+                $templates = $tpl->getTemplates();
+                $list = $advinfo->getAi();
                 
                 $sortlist = array();
                 foreach($templates as $template) {

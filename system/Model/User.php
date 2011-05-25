@@ -8,10 +8,10 @@ class Model_User extends Model_Index {
         FROM users 
         LEFT JOIN users_priv AS p ON (users.id = p.id)
         LEFT JOIN users_group AS g ON (p.group = g.id)
-        WHERE users.id = :id AND users.hash = :hash LIMIT 1";
+        WHERE users.id = :id LIMIT 1";
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":id" => $loginSession["id"], ":hash" => $loginSession["hash"]);
+		$param = array(":id" => $loginSession["id"]);
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -32,6 +32,21 @@ class Model_User extends Model_Index {
         return $data;
     }
     
+    public function getGidFromUid($uid) {
+        $data = array();
+                    
+		$sql = "SELECT up.group AS `group`
+        FROM users_priv AS up
+        WHERE up.id = :uid LIMIT 1";
+		
+		$res = $this->registry['db']->prepare($sql);
+		$param = array(":uid" => $uid);
+		$res->execute($param);
+		$data = $res->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $data[0]["group"];
+    }
+    
     public function getUserId($login) {
 		$sql = "SELECT id 
         FROM users
@@ -47,6 +62,8 @@ class Model_User extends Model_Index {
     }
     
     public function getNumTasks($uid) {
+        $user = new Model_User($this->registry);
+        
         $data = array(); $result = array();
         
         $year = date("Y");
@@ -57,13 +74,13 @@ class Model_User extends Model_Index {
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
-        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid) ) )
-            AND t.gid = 0
+        WHERE ( ( (t.secure = 0) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid OR tr.uid IS NULL) ) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid) ) )
+            AND t.close = 0
             AND td.opening <= NOW()
         ORDER BY t.id DESC";
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $uid);
+		$param = array(":uid" => $uid, ":gid" => $user->getGidFromUid($uid));
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -105,24 +122,24 @@ class Model_User extends Model_Index {
         }
         
         return count($result);
-        
-        //return $data[0]["count"];
     }
     
     public function getNumTasksAll($uid) {
+        $user = new Model_User($this->registry);
+        
         $data = array();
         
 		$sql = "SELECT COUNT(DISTINCT(t.id)) AS count
         FROM troubles AS t
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
-        WHERE ( (t.secure = 0) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid) ) )
-            AND t.gid = 0
+        WHERE ( (t.secure = 0) OR ( (t.secure = 1) AND (t.who = :uid OR tr.uid = :uid OR tr.all = 1 OR tr.gid = :gid) ) )
+            AND t.close = 0
             AND td.opening <= NOW()
         ORDER BY t.id DESC";
 		
 		$res = $this->registry['db']->prepare($sql);
-		$param = array(":uid" => $uid);
+        $param = array(":uid" => $uid, ":gid" => $user->getGidFromUid($uid));
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
         
@@ -137,8 +154,7 @@ class Model_User extends Model_Index {
         LEFT JOIN troubles_responsible AS tr ON (tr.tid = t.id)
         LEFT JOIN troubles_deadline AS td ON (td.tid = t.id)
         WHERE tr.uid IS NULL
-            AND t.gid = 0
-            AND td.opening <= NOW()
+            AND t.close = 0
         ORDER BY t.id DESC";
 		
 		$res = $this->registry['db']->prepare($sql);

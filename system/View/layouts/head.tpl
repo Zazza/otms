@@ -22,7 +22,7 @@
 <script type="text/javascript" src="{{ uri }}js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript" src="{{ uri }}js/scripts.js"></script>
 <script type="text/javascript" src="{{ uri }}fm/js/fm.js"></script>
-<script type="text/javascript" src="{{ uri }}js/jHtmlArea.js"></script>
+<script type="text/javascript" src="{{ uri }}js/jHtmlArea-0.7.0.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="{{ uri }}fm/css/main.css" />
 <script type="text/javascript" src="{{ uri }}fm/js/jquery.watermark.min.js"></script>

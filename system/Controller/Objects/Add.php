@@ -12,11 +12,11 @@ class Controller_Objects_Add extends Controller_Objects {
         
             $this->view->setTitle("Добавить объект");
 
-            $task = new Model_Task($this->registry);
+            $object = new Model_Object($this->registry);
             
             if (isset($_POST["submit"])) {
                 
-                $task->addObject($_POST);
+                $object->addObject($_POST);
                 
                 $this->view->refresh(array("timer" => "1", "url" => "objects/list/"));
                 

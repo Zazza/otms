@@ -73,9 +73,9 @@ class Controller_Stat extends Controller_Index {
                                     $ruser[] = $this->user->getUserInfo($val["uid"]);
                                 }
                                 
-                                $task = new Model_Task($this->registry);
+                                $object = new Model_Object($this->registry);
                                 
-                                $obj = $task->getShortObject($data[0]["oid"]);
+                                $obj = $object->getShortObject($data[0]["oid"]);
                                 
                                 $this->view->tt_task(array("ui" => $this->registry["ui"], "data" => $data, "author" => $author, "ruser" => $ruser, "notObj" => true, "obj" => $obj, "numComments" => $numComments, "uid" => $this->registry["ui"]["id"]));
                                 
@@ -125,9 +125,9 @@ class Controller_Stat extends Controller_Index {
                                     $ruser[] = $this->user->getUserInfo($val["uid"]);
                                 }
                                 
-                                $task = new Model_Task($this->registry);
+                                $object = new Model_Object($this->registry);
                                 
-                                $obj = $task->getShortObject($data[0]["oid"]);
+                                $obj = $object->getShortObject($data[0]["oid"]);
                                 
                                 $this->view->tt_task(array("ui" => $this->registry["ui"], "data" => $data, "author" => $author, "ruser" => $ruser, "notObj" => true, "obj" => $obj, "numComments" => $numComments, "uid" => $this->registry["ui"]["id"]));
                                 
