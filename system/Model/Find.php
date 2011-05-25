@@ -57,7 +57,8 @@ class Model_Find extends Model_Index {
     public function findObjects($find) {
         $rows = array();
 		foreach ($find as $part) {
-			$str = "+".$part;
+            $part = str_replace("*", "", $part);
+			$str = "+" . $part . "*";
 			$finds[] = $str;
 		}
 
