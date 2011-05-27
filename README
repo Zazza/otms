@@ -16,13 +16,15 @@ $config['mailSender'] = 'helpdesk@example.com'; // почта, для рассы
 По-умолчанию включен кеш шаблонизатора Twig, поэтому, если меняются шаблоны, не забыть очистить папку /system/View/cache/
 
 UPDATE с v.0.5:
-для базы выполнить:
+1) для базы выполнить:
 
 mysql> ALTER TABLE `troubles` ADD `close` TINYINT( 4 ) NOT NULL DEFAULT '0',
 ADD `cuid` INT( 11 ) NOT NULL;
 
 mysql> ALTER TABLE `troubles_responsible` ADD `gid` INT( 11 ) NOT NULL DEFAULT '0',
 ADD `all` TINYINT( 4 ) NOT NULL;
+
+2) Необходимо очистить папку /system/View/cache/ !
 
 ---
 P.S. Так как тесторов у проекта нет, возможны баги, ничего крупного или страшного быть не должно. Если что-то найдёте, пожалуйста, сообщайте!
