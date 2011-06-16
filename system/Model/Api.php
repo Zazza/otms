@@ -23,40 +23,33 @@ class Model_Api extends Model_Index {
         $user = $res->fetchAll(PDO::FETCH_ASSOC);
         
         if (count($user) > 0) {
-            if ($user[0]["id"] == 1) {
-                
-                $object = new Model_Object($this->registry);
-                if (!$obj = $object->getObject($oid)) {
-                    $this->err = "<p>Объект не найден!</p>";
-                    
-                    return FALSE;
-                }
-                
-                $sql = "INSERT INTO troubles (oid, who, imp, secure, text) VALUES (:oid, :who, 3, 0, :text)";
-                
-                $res = $this->registry['db']->prepare($sql);
-                $param = array(":oid" => $oid, ":who" => $user[0]["id"], ":text" => $text);
-                $res->execute($param);
-                
-                $sql = "SELECT id FROM troubles ORDER BY id DESC LIMIT 1";		
-                $res = $this->registry['db']->prepare($sql);
-                $res->execute();
-                $tid = $res->fetchAll(PDO::FETCH_ASSOC);
-                
-                $tid = $tid[0]["id"];
-        
-                $sql = "INSERT INTO troubles_deadline (tid, type) VALUES (:tid, :type)";
-                	
-                $res = $this->registry['db']->prepare($sql);
-                $param = array(":tid" => $tid, ":type" => 0);
-                $res->execute($param);
-                
-                return $tid;
-            }
-            
-            $this->err = "<p>Логин или пароль указаны не верно!</p>";
-            
-            return FALSE;
+			$object = new Model_Object($this->registry);
+			if (!$obj = $object->getObject($oid)) {
+				$this->err = "<p>Объект не найден!</p>";
+				
+				return FALSE;
+			}
+			
+			$sql = "INSERT INTO troubles (oid, who, imp, secure, text) VALUES (:oid, :who, 3, 0, :text)";
+			
+			$res = $this->registry['db']->prepare($sql);
+			$param = array(":oid" => $oid, ":who" => $user[0]["id"], ":text" => $text);
+			$res->execute($param);
+			
+			$sql = "SELECT id FROM troubles ORDER BY id DESC LIMIT 1";		
+			$res = $this->registry['db']->prepare($sql);
+			$res->execute();
+			$tid = $res->fetchAll(PDO::FETCH_ASSOC);
+			
+			$tid = $tid[0]["id"];
+	
+			$sql = "INSERT INTO troubles_deadline (tid, type) VALUES (:tid, :type)";
+				
+			$res = $this->registry['db']->prepare($sql);
+			$param = array(":tid" => $tid, ":type" => 0);
+			$res->execute($param);
+			
+			return $tid;
         }
         
         $this->err = "<p>Логин или пароль указаны не верно!</p>";

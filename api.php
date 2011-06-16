@@ -1,22 +1,19 @@
 <?php
 /*
 *
-* "method" => add (метод для создания задачи)
-*
-* "oid" => ID объекта
-*
-* "recipient" => "user"
-* "recipient" => "group"
-* "recipient" => "all"
+* $url = "http://url/otms/" - url проекта, куда обращается API
+* $param["method"] = "add" (метод для создания задачи)
+* $param["oid"] - ID объекта
+* $param["login"] - логин пользователя, из-под которого отправляем задачу
+* $param["pass"]- пароль пользователя, из-под которого отправляем задачу
+* $param["recipient"]  - "user", "group", "all"
 * (кому адресована задача, одному пользователю HelpDesk, группе пользователей или всем)
-*
-* "rid" - recipient(user or group) (логин или имя группы, кому адресована задача, пользователя или группы)
-*
-* text - message (текст задачи)
+* $param["rid"]  - recipient(user or group) (логин или имя группы, кому адресована задача, пользователя или группы)
+* $param["text"] - message (текст задачи)
 *
 */
 
-$url = "http://tushkan.homelinux.com/otms/";
+$url = "http://url/otms/";
 $curl = curl_init($url);
 
 $param["method"] = "add";
