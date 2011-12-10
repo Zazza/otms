@@ -1,5 +1,5 @@
 <script type="text/javascript">
-$("{{ obj }}").droppable({
+$("#text_area").droppable({
     tolerance: "touch",
     accept: ".fm_pre",
     drop: function(event, ui) {
