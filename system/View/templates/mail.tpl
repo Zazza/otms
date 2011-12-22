@@ -44,16 +44,7 @@
 
 <tr>
     <td>
-        <b>Ответственные:</b>
-        {% for part in rusers %}
-        ({{ part.name }}&nbsp;{{ part.soname }})
-        {% endfor %}
-    </td>
-</tr>
-
-<tr>
-    <td>
-        <b>Ссылка:</b>&nbsp;<a href="{{ sitename }}{{ uri }}tt/{{ post.0.id }}/">{{ sitename }}{{ uri }}tt/{{ post.0.id }}/</a>
+        <b>Ссылка:</b>&nbsp;<a href="{{ registry.siteName }}{{ registry.uri }}tt/{{ post.0.id }}/">{{ registry.siteName }}{{ registry.uri }}tt/{{ post.0.id }}/</a>
     </td>
 </tr>
 
@@ -72,7 +63,14 @@
 {% for part in comments %}
 <tr>
     <td style="padding-bottom: 4px">
-        <span style="font-weight: bold">{{ part.name }}&nbsp;{{ part.soname }}&nbsp;[{{ part.timestamp }}]:</span>&nbsp;{{ part.text }}
+        <span style="font-weight: bold">{{ part.name }}&nbsp;{{ part.soname }}&nbsp;[{{ part.timestamp }}]:</span>
+        &nbsp;
+        {% if part.status_id != 0 %} <p style="color: green"><b>Статус:</b> {{ part.status }}</p> {% endif %}
+        {% if part.mail_id != 0 %}
+        {{ part.text.0.text }}
+        {% else %}
+        {{ part.text }}
+        {% endif %}
     </td>
 </tr>
 {% endfor %}

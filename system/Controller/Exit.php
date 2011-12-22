@@ -1,24 +1,19 @@
 <?php
-class Controller_Exit extends Controller_Index {
-	public function __construct($registry, $action, $args) {
-		parent::__construct($registry, $action, $args);
+class Controller_Exit extends Engine_Controller {
+	public function __construct() {
+		parent::__construct();
 	}
-	
-	public function index($args) {
-        if ($this->registry["auth"]) {
-            
-            $this->view->setTitle("Выход");
-            
-            if (isset($_POST["submit"])) {
-                session_destroy();
 
-                $this->view->refresh(array("timer" => "1", "url" => "login/"));
-            } else {
-                $this->view->exit();
-            }
-        }
-        
-        $this->view->showPage();
-    }
+	public function index() {
+		$this->view->setTitle("Выход");
+		
+		$ui = new Model_Ui();
+
+		session_destroy();
+		
+		$ui->stopSess($this->registry["ui"]["id"]);
+
+		$this->view->refresh(array("timer" => "1", "url" => ""));
+	}
 }
 ?>

@@ -1,3 +1,5 @@
-<p style="margin: 30px 0 0 50px">Выполняем переход...</p>
+<META HTTP-EQUIV="Refresh" CONTENT="{{ timer }}; URL='{{ registry.uri }}{{ url }}'">
 
-<META HTTP-EQUIV="Refresh" CONTENT="{{ timer }}; URL='{{ uri }}{{ url }}'">
+<script type="text/javascript">
+$('<div>Переход...</div>').dialog({ modal: true, width: 50, height: 80 });
+</script>

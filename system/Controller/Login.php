@@ -1,28 +1,27 @@
 <?php
-class Controller_Login extends Controller_Index {
-	public function __construct($registry, $action, $args) {
-		parent::__construct($registry, $action, $args);
-	}
+class Controller_Login extends Engine_Controller {
 	
-	public function index($args) {
-        if (!$this->registry["auth"]) {
+	function __construct() {
+		parent::__construct();
+    }
+
+	public function index() {
+		if (!$this->registry["auth"]) {
             
-            $this->view->setTitle("Вход");
-            
-            $login = new Model_Login($this->registry);
+            $login = new Model_Ui();
             
             if (isset($_POST["submit"])) {
-                if ($login->login($_POST["login"], $_POST["pass"])) {
-                    $this->view->refresh(array("timer" => "1", "url" => "tt/"));
+                if ($login->login($_POST["login"], $_POST["password"])) {
+                    echo $this->view->render("refresh", array("timer" => "1", "url" => ""));
                 } else {
-                    $this->view->login(array("err" => TRUE, "url" => $this->registry["siteName"]));
+                    echo $this->view->render("login", array("err" => TRUE, "url" => $this->registry["siteName"]));
                 }
             } else {        
-                $this->view->login(array("url" => $this->registry["siteName"]));
+                echo $this->view->render("login", array("url" => $this->registry["siteName"]));
             }
+        } else {
+        	$this->__call();
         }
-        
-        $this->view->showPage();
-    }
+	}
 }
 ?>

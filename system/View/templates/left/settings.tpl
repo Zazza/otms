@@ -1,26 +1,21 @@
-{% if args == "users" %}
-    <p class="sellmenu">
-{% else %}
-    <p class="lmenu">
-{% endif %}
-    <a href="{{ uri }}settings/users/"><img style="vertical-align: middle" src="{{ uri }}img/left/users.png" alt="" border="0" /></a>
-    <a class="aleft" href="{{ uri }}settings/users/">Управление пользователями</a>
-</p>
+<p style="font-weight: bold; color: #999">Меню:</p>
 
-{% if args == "tt" %}
+{% if registry.ui.admin %}
+{% if registry.args.0 == "mail" %}
     <p class="sellmenu">
 {% else %}
     <p class="lmenu">
 {% endif %}
-    <a href="{{ uri }}settings/tt/"><img style="vertical-align: middle" src="{{ uri }}img/left/zones-stack.png" alt="" border="0" /></a>
-    <a class="aleft" href="{{ uri }}settings/tt/">Редактор групп для задач</a>
+    <a href="{{ registry.uri }}settings/mail/"><img style="vertical-align: middle" src="{{ registry.uri }}img/left/mail.png" alt="" border="0" /></a>
+    <a class="aleft" href="{{ registry.uri }}settings/mail/">Почта</a>
 </p>
+{% endif %}
 
-{% if args == "templates" %}
+{% if registry.args.0 == "interface" %}
     <p class="sellmenu">
 {% else %}
     <p class="lmenu">
 {% endif %}
-    <a href="{{ uri }}settings/templates/"><img style="vertical-align: middle" src="{{ uri }}img/left/reports.png" alt="" border="0" /></a>
-    <a class="aleft" href="{{ uri }}settings/templates/">Шаблоны</a>
+    <a href="{{ registry.uri }}settings/interface/"><img style="vertical-align: middle" src="{{ registry.uri }}img/left/interface.png" alt="" border="0" /></a>
+    <a class="aleft" href="{{ registry.uri }}settings/interface/">Интерфейс</a>
 </p>

@@ -1,15 +1,13 @@
 <?php
-class Controller_Help extends Controller_Index {
-	public function __construct($registry, $action, $args) {
-		parent::__construct($registry, $action, $args);
+class Controller_Help extends Engine_Controller {
+	public function __construct() {
+		parent::__construct();
 	}
 	
-	public function index($args) {
+	public function index() {
         $this->view->setTitle("Справка");
         
         $this->view->help();
-        
-        $this->view->showPage();
     }
 }
 ?>

@@ -1,37 +1,34 @@
 <?php
 class Controller_Find_Adv extends Controller_Find {
-    
-    public function __construct($registry) {
-		parent::__construct($registry);
-        
-        $this->begin("find", "adv");
-	}
-	
-	public function index($args) {
+
+	public function index() {
+		
         $this->view->setTitle("Поиск");
        
-        $find = new Model_Find($this->registry);
-        $object = new Model_Object($this->registry);
-        $ai = new Model_Ai($this->registry);
+        $find = new Model_Find();
+        $object = new Model_Object();
+        $ai = new Model_Ai();
         
         if (isset($this->findSess["string"])) {
             
             $this->view->setMainContent("<p style='font-weight: bold; margin-bottom: 20px'>Поиск: " . $this->findSess["string"] . "</p>");
 
-            if (isset($args[1])) {
-    			if ( ($args[1] == "page") and (isset($args[2])) ) {
-    				if (!$find->setPage($args[2])) {
+            if (isset($this->args[1])) {
+    			if ( ($this->args[1] == "page") and (isset($this->args[2])) ) {
+    				if (!$find->setPage($this->args[2])) {
     					$this->__call("objects", "index");
     				}
     			}
     		}
+    		
+    		$find->links = "/" . $this->args[0] . "/";
             
             $text = substr($this->findSess["string"], 0, 64);
 			$text = explode(" ", $text);
 
             $findArr = $find->findAdvs($text);
             
-            if (!isset($args[1]) or ($args[1] == "page"))  {
+            if (!isset($this->args[1]) or ($this->args[1] == "page"))  {
                 
                 foreach($findArr as $part) {
                     
@@ -48,8 +45,6 @@ class Controller_Find_Adv extends Controller_Find {
     			}
             }
         }
-
-        $this->view->showPage();
     }
 }
 ?>

@@ -1,3 +1,5 @@
-<h2 style="margin-bottom: 30px">Система управления объектами и задачами</h2>
+<META HTTP-EQUIV="Refresh" CONTENT="0; URL='{{ registry.uri }}tt/'">
 
-<p>github: <a href="https://github.com/Zazza/otms/">https://github.com/Zazza/otms/</a></p>
+<script type="text/javascript">
+$('<div>Переход...</div>').dialog({ modal: true, width: 50, height: 80 });
+</script>

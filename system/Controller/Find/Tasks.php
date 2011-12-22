@@ -1,47 +1,44 @@
 <?php
 class Controller_Find_Tasks extends Controller_Find {
-    
-    public function __construct($registry) {
-		parent::__construct($registry);
-        
-        $this->begin("find", "tasks");
-	}
-	
-	public function index($args) {
+
+	public function index() {
+
         $this->view->setTitle("Поиск");
        
-        $find = new Model_Find($this->registry);
-        $object = new Model_Object($this->registry);
+        $find = new Model_Find();
+        $object = new Model_Object();
         
         if (isset($this->findSess["string"])) {
             
             $this->view->setMainContent("<p style='font-weight: bold; margin-bottom: 20px'>Поиск: " . $this->findSess["string"] . "</p>");
 
-            if (isset($args[1])) {
-    			if ( ($args[1] == "page") and (isset($args[2])) ) {
-    				if (!$find->setPage($args[2])) {
-    					$this->__call("objects", "index");
+        	if (isset($_GET["page"])) {
+    			if (is_numeric($_GET["page"])) {
+    				if (!$find->setPage($_GET["page"])) {
+    					$this->__call("find", "tasks");
     				}
     			}
     		}
+    		
+    		$find->links = "/" . $this->args[0] . "/";
             
             $text = substr($this->findSess["string"], 0, 64);
 			$text = explode(" ", $text);
 
             $findArr = $find->findTroubles($text);
             
-            if (!isset($args[1]) or ($args[1] == "page"))  {
+            if (!isset($this->args[1]) or ($this->args[1] == "page"))  {
                 
                 foreach($findArr as $part) {
                     
-                    if ($data = $this->tt->getTask($part["id"])) {
+                    if ($data = $this->registry["tt"]->getTask($part["id"])) {
                         
-                        $numComments = $this->tt->getNumComments($part["id"]);
+                        $numComments = $this->registry["tt"]->getNumComments($part["id"]);
                         
-                        $author = $this->user->getUserInfo($data[0]["who"]);
+                        $author = $this->registry["user"]->getUserInfo($data[0]["who"]);
                         
                         foreach($data as $val) {
-                            $ruser[] = $this->user->getUserInfo($val["uid"]);
+                            $ruser[] = $this->registry["user"]->getUserInfo($val["uid"]);
                         }
                     
                         $obj = $object->getShortObject($part["oid"]);
@@ -56,8 +53,6 @@ class Controller_Find_Tasks extends Controller_Find {
     			}
             }
         }
-
-        $this->view->showPage();
     }
 }
 ?>

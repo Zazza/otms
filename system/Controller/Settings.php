@@ -1,33 +1,21 @@
 <?php
-class Controller_Settings extends Controller_Index {
-    protected $registry;
-    
-	public function __construct($registry, $action, $args) {
-		$this->registry = $registry;
+class Controller_Settings extends Modules_Controller {
+	public function index() {
+		if ($this->registry["ui"]["admin"]) {
+			$this->view->setLeftContent($this->view->render("left_settings", array()));
+			
+			if (isset($this->args[0])) {
+				if ($this->args[0] == "mail") {
+					Controller_Settings_Mail::index();
+				} else if ($this->args[0] == "interface") {
+					Controller_Settings_Interface::index();
+				} else {
+					$this->view->settings_index();
+				}
+			} else {
+				$this->view->settings_index();
+			}
+		}
 	}
-	
-	public function index($args) {        
-        if (isset($args[0])) {
-            if ($args[0] == "users") {
-                
-                $controller = new Controller_Settings_Users($this->registry);
-                $controller->index($args);
-
-            } elseif ($args[0] == "tt") {
-                
-                $controller = new Controller_Settings_Tt($this->registry);
-                $controller->index($args);
-
-            } elseif ($args[0] == "templates") {
-                
-                $controller = new Controller_Settings_Templates($this->registry);
-                $controller->index($args);
-                
-            }
-        } else {
-            $controller = new Controller_Settings_Templates($this->registry);
-            $controller->index($args);
-        }
-    }
 }
 ?>

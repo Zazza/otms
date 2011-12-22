@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="icon" type="image/gif" href="{{ registry.uri }}favicon.png" />
+<meta name="description" content="{{ description }}" />
+<meta name="keywords" content="{{ keywords }}" />
+<title>{{ title }}</title>
+<link href="{{ registry.uri }}css/Aristo.css" rel="stylesheet" type="text/css" />
+<link href="{{ registry.uri }}css/main.css" rel="stylesheet" media="all" />
+<link href="{{ registry.uri }}css/jHtmlArea.css" rel="stylesheet" type="text/css" />
+<link href="{{ registry.uri }}css/jquery.treeview.css" rel="stylesheet" type="text/css" />
+<link href="{{ registry.uri }}css/dropdown.css" rel="stylesheet" type="text/css" />
+<link href="{{ registry.uri }}css/default.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{ registry.uri }}js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="{{ registry.uri }}js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="{{ registry.uri }}js/jquery.timers.js"></script>
+<script type="text/javascript" src="{{ registry.uri }}js/jHtmlArea-0.7.0.min.js"></script>
+<script type="text/javascript" src="{{ registry.uri }}js/jquery.treeview.js"></script>
+<script type="text/javascript" src="{{ registry.uri }}js/scripts.js"></script>
+{{ css }}
+{{ js }}
+
+<script type="text/javascript">
+    otmsInit('{{ registry.uri }}');
+</script>
+</head>
+<body>
+
+<!-- TOP -->
+<div id="topotms">
+	<ul class="dropdown">{{ menu }}</ul>
+
+	<div style="text-align: right; padding-top: 4px">
+		<a href="{{ registry.uri }}">
+		<img style="height: 18px; margin: 0 10px 0 0" src="{{ registry.uri }}img/logo3.png" alt="logo" border="0" />
+		</a>
+	</div>
+</div>
+
+<div class="downsh">
+	<ul class="dropdown topdropdown">{{ fastmenu }}</ul>
+	{{ fastmenu_notdrop }}
+</div>
+<!-- /TOP -->
+
+<!-- CONTENT -->
+<div id="mainContent">
+
+{{ content }}
+
+<div id="leftBlock">
+
+<!-- PROFILE -->
+<div style="overflow: hidden; padding: 20px 30px 10px 20px">
+
+	<div style="overflow: hidden; margin-bottom: 10px">
+	
+		<div style="float: left">
+			<a href="{{ registry.uri }}profile/" title="профиль">
+			<img class="avatar" style="border: 1px solid #555; max-height: 40px; max-width: 40px" src="{{ registry.ui.avatar }}" alt="аватар" />
+			</a>
+		</div>
+		
+		<div style="margin: 4px 0 0 60px; font-size: 12px">
+			<a href="{{ registry.uri }}profile/" title="профиль"><b>{{ registry.ui.name }}<br />{{ registry.ui.soname }}</b></a>
+		</div>
+	
+	</div>
+
+	<div id="profile_content">{{ profile }}</div>
+	
+	<hr />
+
+</div>
+<!-- /PROFILE -->
+
+    <div style="padding: 0 20px 0 20px">{{ leftBlock }}</div>
+</div>
+
+<div id="rightMainContent">
+    {{ main_content }}
+</div>
+
+</div>
+<!-- /CONTENT -->
+
+</body>
+</html>
