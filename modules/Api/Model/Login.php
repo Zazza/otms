@@ -4,14 +4,14 @@ class Api_Model_Login extends Modules_Model {
 	private $_password = null;
 	
 	function login() {
-		if (isset($_GET["login"])) {
-			$this->_login = $_GET["login"];
+		if (isset($_REQUEST["login"])) {
+			$this->_login = $_REQUEST["login"];
 		} else {
 			return false;
 		}
 
-		if (isset($_GET["password"])) {
-			$this->_password = $_GET["password"];
+		if (isset($_REQUEST["password"])) {
+			$this->_password = $_REQUEST["password"];
 		} else {
 			return false;
 		}
@@ -24,6 +24,7 @@ class Api_Model_Login extends Modules_Model {
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
 		
 		if (count($data) == 1) {
+			$this->registry["ui"] = $data[0];
 			return true;
 		} else {
 			return false;

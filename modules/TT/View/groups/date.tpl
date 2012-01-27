@@ -6,7 +6,7 @@
 
 <p style="margin-top: 10px"><b>Укажите диапазон просматриваемых дат (<a href="{{ registry.uri }}tt/groups/?clear">сбросить</a>):</b></p>
 
-<div style="height: 30px">
+<div style="overflow: hidden; padding-bottom: 3px">
 <div style="float: left; width: 40px">С:</div>
 <div style="float: left"><input name="sday" id="sday" type="text" class="selected" value="{{ date.sday|e }}" /></div>
 <div style="float: left">
@@ -29,7 +29,7 @@
 <div style="float: left"><input type="text" id="sbut" value="выбрать дату" style="cursor: pointer" /></div>
 </div>
 
-<div style="height: 30px">
+<div style="overflow: hidden; padding-bottom: 3px">
 <div style="float: left; width: 40px">По:</div>
 <div style="float: left"><input name="fday" id="fday" type="text" class="selected" value="{{ date.fday|e }}" /></div>
 <div style="float: left">

@@ -14,6 +14,9 @@ class Controller_Tt_Attach extends Controller_Tt {
 						$fn = $this->registry["tt"]->getFile($_GET["tid"], $filename);
 						$file = $this->registry["rootPublic"] . $this->registry["path"]["upload"] . $fn;
 					}
+				} elseif (isset($_GET["did"])) {
+					$fn = $this->registry["tt"]->getDraftFile($_GET["did"], $filename);
+					$file = $this->registry["rootPublic"] . $this->registry["path"]["upload"] . $fn;
 				} elseif (isset($_GET["tdid"])) {
 					if ( (isset($_GET["remote"])) and ($_GET["remote"] == 1) ) {
 						$fn = $this->registry["tt"]->getCommentMailFile($_GET["tdid"], $filename);

@@ -74,7 +74,7 @@ class PreModule {
 		} else {
 			$module_config = $this->registry["rootPublic"] . "/" . $this->module_path . 'config.ini';
 
-			$config = array_merge(parse_ini_file($module_config));
+			$config = array_merge(parse_ini_file($module_config, true));
 
 			$this->registry["memcached"]->save($config, false, $this->timeLife);
 		}
@@ -199,7 +199,7 @@ class PreModule {
 	}
 }
 
-class Modules_Modules extends Engine_Bootstrap {
+class Modules_Modules extends Preload {
 	public function load() {
 		$module_name = array();
 		

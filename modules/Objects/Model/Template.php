@@ -203,5 +203,19 @@ class Model_Template extends Modules_Model {
             }
         }
     }
+    
+    public function getFidFromFname($tid, $fname) {
+    	$sql = "SELECT id
+        FROM templates_fields
+        WHERE tid = :tid AND field = :fname
+        LIMIT 1";
+		
+		$res = $this->registry['db']->prepare($sql);
+		$param = array(":tid" => $tid, ":fname" => $fname);
+		$res->execute($param);
+		$data = $res->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $data[0]["id"];
+    }
 }
 ?>

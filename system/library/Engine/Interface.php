@@ -1,6 +1,6 @@
 <?php
 abstract class Engine_Interface {
-	protected $registry;
+	public $registry;
 	
 	function __construct() {
 		$this->registry = Engine_Registry::getInstance();

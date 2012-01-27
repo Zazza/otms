@@ -3,7 +3,7 @@
  class Engine_Bootstrap {
     private $_config = null;
     
-    protected $registry = null;    
+    protected $registry = null;
     protected $view = null;
     
     private $DBH = null;
@@ -112,7 +112,8 @@
      public function post() {
      	$this->view = $this->registry["view"];
      	
-     	foreach($this->registry["mods"] as $module) {
+        $mods = $this->registry["mods"];
+     	foreach($mods as $module) {
      		$this->registry["module_" . $module]->postRouterInit();
      		$this->registry["module_" . $module]->postInit();
      	}

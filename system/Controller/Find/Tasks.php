@@ -32,18 +32,55 @@ class Controller_Find_Tasks extends Controller_Find {
                 foreach($findArr as $part) {
                     
                     if ($data = $this->registry["tt"]->getTask($part["id"])) {
-                        
-                        $numComments = $this->registry["tt"]->getNumComments($part["id"]);
-                        
-                        $author = $this->registry["user"]->getUserInfo($data[0]["who"]);
-                        
-                        foreach($data as $val) {
-                            $ruser[] = $this->registry["user"]->getUserInfo($val["uid"]);
-                        }
-                    
-                        $obj = $object->getShortObject($part["oid"]);
-                        
-                        $this->view->tt_task(array("ui" => $this->registry["ui"], "data" => $data, "author" => $author, "ruser" => $ruser, "notObj" => true, "obj" => $obj, "numComments" => $numComments, "uid" => $this->registry["ui"]["id"]));
+                    	$numComments = $this->registry["tt"]->getNumComments($part["id"]);
+                    	$newComments = $this->registry["tt"]->getNewCommentsFromTid($part["id"]);
+                    	
+                    	if ($data[0]["remote_id"] == 0) {
+                    		if (isset($this->registry["module_users"])) {
+                    			$author = $this->registry["user"]->getUserInfo($data[0]["who"]);
+                    		} else {
+                    			$ui = new Model_Ui();
+                    			$user = $ui->getInfo($val["uid"]);
+                    		}
+                    	} else {
+                    		$author = $this->registry["tt_user"]->getRemoteUserInfo($data[0]["who"]);
+                    	}
+                    	
+                    	$ruser = array();
+                    	
+                    	foreach($data as $val) {
+                    		if (isset($val["uid"])) {
+                    			if ($val["uid"] != 0) {
+                    				if (isset($this->registry["module_users"])) {
+                    					$user = $this->registry["user"]->getUserInfo($val["uid"]);
+                    				} else {
+                    					$ui = new Model_Ui();
+                    					$user = $ui->getInfo($val["uid"]);
+                    				}
+                    	
+                    				$ruser[] = "<a style='cursor: pointer' onclick='getUserInfo(" . $val["uid"] . ")'>" . $user["name"] . " " . $user["soname"] . "</a>";
+                    			}
+                    		}
+                    	
+                    		if (isset($val["rgid"])) {
+                    			if ($val["rgid"] != 0) {
+                    				$ruser[] = "<span style='color: #5D7FA6'><b>" . $this->registry["user"]->getSubgroupName($val["rgid"]) . "</b></span>";
+                    			}
+                    		}
+                    	
+                    		if ($val["all"] == 1) {
+                    			$ruser[] = "<span style='color: #D9A444'><b>Все</b></span>";
+                    		}
+                    	}
+                    	
+                    	$cuser = $this->registry["user"]->getUserInfo($data[0]["cuid"]);
+                    	
+                    	$notObj = true;
+                    	if (!$obj = $object->getShortObject($data[0]["oid"])) {
+                    		$notObj = false;
+                    	}
+                    	
+                        $this->view->find_tt_task(array("data" => $data, "author" => $author, "ruser" => $ruser, "cuser" => $cuser, "notObj" => $notObj, "obj" => $obj, "numComments" => $numComments, "newComments" => $newComments));
                     }
                 }
             

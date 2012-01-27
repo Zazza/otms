@@ -9,11 +9,17 @@ class Controller_Objects_Show extends Controller_Objects {
         $forms = $ai->getForms();
         
         if ($obj = $object->getShortObject($this->args[0])) {
+        	
+        	if (isset($this->registry["module_mail"])) {
+        		$mail = true;
+        	} else {
+        		$mail = false;
+        	}
             
             $numTroubles = $object->getNumTroubles($this->args[0]);
             $advInfo = $ai->getAdvancedInfo($this->args[0]);
             $numAdvInfo = $ai->getNumAdvancedInfo($this->args[0]);
-            $this->view->objectMain(array("ui" => $this->registry["ui"], "obj" => $obj, "advInfo" => $advInfo, "forms" => $forms, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles));
+            $this->view->objectMain(array("ui" => $this->registry["ui"], "mail" => $mail, "obj" => $obj, "advInfo" => $advInfo, "forms" => $forms, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles));
         } else {
             $this->view->setMainContent("<p>Объект не найден</p>");
         }

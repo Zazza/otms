@@ -60,7 +60,7 @@
 
 <div style="margin-left: 100px">
 
-<div style="overflow: hidden; height: 30px; padding-top: 5px">
+<div style="overflow: hidden; padding-top: 5px">
 
 <span style="padding: 5px 8px" class="button">
 <a href="{{ siteName }}{{ registry.uri }}tt/add/?oid={{ obj.0.id }}" title="добавить задачу">

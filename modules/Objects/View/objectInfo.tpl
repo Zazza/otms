@@ -1,20 +1,32 @@
 <div style="overflow: hidden; margin-bottom: 20px">
 
 <span class="button" style="float: left; font-weight: bold">
-<img src="{{ registry.uri }}img/edititem.gif" alt="" style="vertical-align: middle" />
-<a style="outline: none; cursor: pointer; text-decoration: none" href="{{ registry.uri }}objects/edit/{{ data.0.id }}/">Правка</a>
+	<img src="{{ registry.uri }}img/edititem.gif" alt="" style="vertical-align: middle" />
+	<a style="outline: none; cursor: pointer; text-decoration: none" href="{{ registry.uri }}objects/edit/{{ data.0.id }}/">Правка</a>
+</span>
+
+{% if mail %}
+<div class="button" style="margin-left: 10px; float: left">
+	<img style="vertical-align: middle" src="{{ registry.uri }}img/left/mail-receive.png" alt="mail" border="0" />
+	<a href="{{ registry.uri }}mail/?oid={{ data.0.id }}">входящая почта</a>
+</div>
+
+<div class="button" style="margin-left: 10px; float: left">
+	<img style="vertical-align: middle" src="{{ registry.uri }}img/left/mail-send.png" alt="mail" border="0" />
+	<a href="{{ registry.uri }}mail/send/?oid={{ data.0.id }}">исходящая почта</a>
+</div>
+{% endif %}
+
+<span class="button" style="margin-left: 10px; float: left; font-weight: bold">
+	<a style="text-decoration: none" href="{{ registry.uri }}objects/history/{{ data.0.id }}/" title="История">
+	<img src="{{ registry.uri }}img/clock-history.png" alt="История" style="vertical-align: middle" border="0" />
+	</a>
 </span>
 
 <span class="button" style="margin-left: 10px; float: left; font-weight: bold">
-<a style="text-decoration: none" href="{{ registry.uri }}objects/history/{{ data.0.id }}/" title="История">
-<img src="{{ registry.uri }}img/clock-history.png" alt="История" style="vertical-align: middle" border="0" />
-</a>
-</span>
-
-<span class="button" style="margin-left: 10px; float: left; font-weight: bold">
-<a style="cursor: pointer" onclick="refreshurl('{{ siteName }}{{ registry.uri }}objects/{{ data.0.id }}/')">
-<img src="{{ registry.uri }}img/enter.png" title="перейти к объекту" alt="object" border="0" style="vertical-align: middle" />
-</a>
+	<a style="cursor: pointer" onclick="refreshurl('{{ siteName }}{{ registry.uri }}objects/{{ data.0.id }}/')">
+	<img src="{{ registry.uri }}img/enter.png" title="перейти к объекту" alt="object" border="0" style="vertical-align: middle" />
+	</a>
 </span>
 
 </div>

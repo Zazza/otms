@@ -107,12 +107,17 @@ class Helpers_Helpers extends Engine_Helper {
 				foreach($_POST["attaches"] as $part) {
 					$filename = mb_substr($part, mb_strrpos($part, DIRECTORY_SEPARATOR) + 1, mb_strlen($part)-mb_strrpos($part, DIRECTORY_SEPARATOR));
 					
-					if ( (isset($_POST["mail"])) and ($_POST["mail"]) ) {
-						$dir = $this->registry["path"]["attaches"];
-						$md5 = $mailClass->getFile($_POST["mail_id"], $filename);
-					} else {
+					if (substr($part, 0, 1) != "/") {
 						$dir = $this->registry["path"]["upload"];
-						$md5 = $mailClass->getFileMD5($part);
+						$md5 = $mailClass->getAttachFileMD5($part);
+					} else {
+						if ( (isset($_POST["mail"])) and ($_POST["mail"]) ) {
+							$dir = $this->registry["path"]["attaches"];
+							$md5 = $mailClass->getFile($_POST["mail_id"], $filename);
+						} else {
+							$dir = $this->registry["path"]["upload"];
+							$md5 = $mailClass->getFileMD5($part);
+						}
 					}
 
 					$mailer->AddAttachment($this->registry["rootPublic"] . $dir . $md5, $filename);

@@ -25,9 +25,11 @@
     otmsInit('{{ registry.uri }}');
 </script>
 </head>
-<body>
+
+<body style="padding-top: 70px">
 
 <!-- TOP -->
+<div class="topbar">
 <div id="topotms">
 	<ul class="dropdown">{{ menu }}</ul>
 
@@ -42,6 +44,7 @@
 	<ul class="dropdown topdropdown">{{ fastmenu }}</ul>
 	{{ fastmenu_notdrop }}
 </div>
+</div>
 <!-- /TOP -->
 
 <!-- CONTENT -->
@@ -50,32 +53,34 @@
 {{ content }}
 
 <div id="leftBlock">
+<div class="well">
 
 <!-- PROFILE -->
-<div style="overflow: hidden; padding: 20px 30px 10px 20px">
-
-	<div style="overflow: hidden; margin-bottom: 10px">
+	<div style="overflow: hidden; padding: 20px 30px 10px 20px">
 	
-		<div style="float: left">
-			<a href="{{ registry.uri }}profile/" title="профиль">
-			<img class="avatar" style="border: 1px solid #555; max-height: 40px; max-width: 40px" src="{{ registry.ui.avatar }}" alt="аватар" />
-			</a>
-		</div>
+		<div style="overflow: hidden; margin-bottom: 10px">
 		
-		<div style="margin: 4px 0 0 60px; font-size: 12px">
-			<a href="{{ registry.uri }}profile/" title="профиль"><b>{{ registry.ui.name }}<br />{{ registry.ui.soname }}</b></a>
+			<div style="float: left">
+				<a href="{{ registry.uri }}profile/" title="профиль">
+				<img class="avatar" style="border: 1px solid #555; max-height: 40px; max-width: 40px" src="{{ registry.ui.avatar }}" alt="аватар" />
+				</a>
+			</div>
+			
+			<div style="margin: 4px 0 0 60px; font-size: 12px">
+				<a href="{{ registry.uri }}profile/" title="профиль"><b>{{ registry.ui.name }}<br />{{ registry.ui.soname }}</b></a>
+			</div>
+		
 		</div>
+	
+		<div id="profile_content">{{ profile }}</div>
+		
+		<hr />
 	
 	</div>
-
-	<div id="profile_content">{{ profile }}</div>
-	
-	<hr />
-
-</div>
 <!-- /PROFILE -->
 
     <div style="padding: 0 20px 0 20px">{{ leftBlock }}</div>
+</div>
 </div>
 
 <div id="rightMainContent">

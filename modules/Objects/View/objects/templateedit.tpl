@@ -16,7 +16,7 @@
 {% for part in post %}
 {% if part.field %}
 
-<div style="height: 30px">
+<div style="overflow: hidden; padding-bottom: 3px">
 
 <div style="float: left; width: 200px">
 <input type="text" name="field[{{ part.fid }}]" value="{{ part.field }}" />
@@ -48,7 +48,7 @@
 <script type="text/javascript">
 var i = 0;
 function addField() {
-    var val = '<div style="height: 30px">';
+    var val = '<div style="overflow: hidden; padding-bottom: 3px">';
     val += '<div style="float: left; width: 200px"><input type="text" name="field[' + i + ']" /><input type="hidden" name="new[' + i + ']" value="1" /></div><div style="float: left; width: 80px; text-align: center"><input type="checkbox" name="main[' + i + ']" value="0" /></div><div style="float: left; width: 80px; text-align: center"><input type="checkbox" name="expand[' + i + ']" /></div>';
     val += '</div>';
     $("#field").append(val);

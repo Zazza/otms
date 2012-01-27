@@ -17,7 +17,7 @@ div {
 <?php
 $flag = TRUE;
 
-if (version_compare(phpversion(), '5.1.0', '<') == true) {
+if (version_compare(phpversion(), '5.1.6', '<') == true) {
     echo "<div style='color: red'>PHP version must be > 5.1</div>";
     $flag = FALSE;
 } else {

@@ -1,42 +1,11 @@
-EADME
+#OTMS
 
-OTMS http://bitboom.ru
+Full documentation on [site](http://otms-project.ru)
 
-Система OTMS состоит из модулей. В бесплатную версию входят модули:
-Задачи
-Объекты
-Информация
-Пользователи
-API
+[Instruction](http://otms-project.ru/docs/otms.pdf)
 
-Требования: /samples/requirements/requirements.php
+[Demo 1](http://otms-project.ru/demo/otms/)
+[Demo 2](http://otms-project.ru/demo/otmsfree/)
 
-На директории /upload, /cache/, /avadir необходимо выставить права на запись.
-
-Настройки:
-
-/system/config.ini:
-local = '127.0.0.1'
-
-// настройки для подключения к бд
-db['adapter'] = 'mysql'
-db['host'] = 'localhost'
-db['username'] = ''
-db['password'] = ''
-db['dbname'] = ''
-
-keywords = 'OTMS'
-description = 'OTMS'
-
-// для календаря
-calYear[] = 2011
-calYear[] = 2012
-calYear[] = 2013
-
-// имя в почтовом сообщении, для рассылки уведомлений OTMS
-mailSenderName = 'OTMS'
-
-// true или false включать кеширование или нет
-twig_cache = false
-
-Если включени кеш шаблонизатора Twig и меняются шаблоны, нужно очистить папку /cache/
+## License
+See COPYING file

@@ -21,12 +21,101 @@ html, body {
 	background: #708eaa;
 }
 
+.topbar {
+    height: 40px;
+    left: 0;
+    overflow: visible;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 10000;
+}
+
+.well {
+    background-color: #F5F5F5;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+    margin-bottom: 20px;
+    min-height: 20px;
+    padding: 5px;
+}
+
+input[type="text"], input[type="password"] {
+    background-color: #F7F7F7;
+    border-color: #AAAAAA #DDDDDD #DDDDDD;
+    border-style: solid;
+    border-width: 1px;
+    height: 22px;
+}
+
+input, textarea {
+    -moz-transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset;
+}
+
+input, textarea, select, .uneditable-input {
+    border: 1px solid #CCCCCC;
+    border-radius: 3px 3px 3px 3px;
+    color: #2b2b2b;
+    display: inline-block;
+    font-size: 13px;
+    line-height: 18px;
+    padding: 4px;
+}
+
+textarea, select, .uneditable-input {
+	width: 210px;
+}
+
+button {
+	height: 27px;
+}
+
+label, input, select, textarea {
+    font-size: 11px;
+}
+
+button, input {
+    line-height: normal;
+}
+
+button, input, select, textarea {
+    font-size: 100%;
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.input-medium, input.medium, textarea.medium, select.medium {
+    width: 150px;
+}
+
+select, input[type="file"] {
+    height: 27px;
+    line-height: 27px;
+}
+
+button, input[type="button"], input[type="reset"], input[type="submit"] {
+    cursor: pointer;
+}
+
+button, input {
+    line-height: normal;
+}
+
+button, input, select, textarea {
+    font-size: 100%;
+    margin: 0;
+    vertical-align: baseline;
+}
+
 #mainContent {
 	clear: both;
 	background-color: #FFF;
 	overflow: hidden;
 	text-align: left;
 	font: 1.083em/1.54em Verdana, sans-serif;
+	padding: 0 10px;
 }
 
 #leftBlock {
@@ -40,7 +129,7 @@ html, body {
 }
 #rightMainContent {
     background-color: #FFF;
-    margin: 10px 20px 50px 250px;
+    margin: 10px 20px 50px 260px;
 }
 
 hr {
@@ -219,21 +308,27 @@ a.pager { color: #0066CC; text-decoration: none; }
 }
 
 .button {
-    -moz-border-radius: 2px 2px 2px 2px;
-    border-radius: 2px 2px 2px 2px;
-    -webkit-border-radius: 2px 2px 2px 2px;
-    background-color: #DFE4EA;
-    border: 1px solid #CCC;
-    color: #000000;
-    font-size: 11px;
-    line-height: 15px;
-    padding: 5px 7px;
-    position: relative;
-    text-align: left;
-    overflow: hidden;
-    margin-bottom: 3px;
-    text-decoration: none;
-    text-shadow: 0 1px 0 #FFFFFF;
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    -moz-transition: all 0.1s linear 0s;
+    background-color: #E6E6E6;
+    background-image: -moz-linear-gradient(center top , #FFFFFF, #FFFFFF 25%, #E6E6E6);
+    background-repeat: no-repeat;
+    border-color: #CCCCCC #CCCCCC #BBBBBB;
+    border-radius: 4px 4px 4px 4px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: #333333;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    line-height: normal;
+    padding: 5px 14px 6px;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 }
 
 .tabs {
@@ -244,7 +339,7 @@ a.pager { color: #0066CC; text-decoration: none; }
 /* FIND */
 #dfind {
 	float: right;
-	margin: 4px 10px 0 0;
+	margin: 3px 10px 0 0;
 }
 #in_find {
 	border: 0px none;
@@ -263,7 +358,7 @@ a.pager { color: #0066CC; text-decoration: none; }
 	width: 10px;
 	padding-left: 10px;
 	position: relative;
-	top: 1px;
+	top: 3px;
 }
 /* /FIND */
 

@@ -17,7 +17,7 @@ class Controller_Objects_Subgroups extends Controller_Objects {
 			$ai = $this->registry["module_kb"];
 			$forms = $ai->getForms();
 
-			$this->object->links = "/" . $this->args[0] . "/" . $this->args[1] . "/";
+			$this->object->links = "objects/" . $this->args[0] . "/" . $this->args[1] . "/";
 			
 			$data = $this->object->getObjects($this->args[1]);
 			

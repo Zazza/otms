@@ -42,5 +42,10 @@ class Logs_Public_Functions extends Modules_Functions {
 			$this->registry["logs"]->set("service", $string, "");
 		}
 	}
+	
+	function addEvent($params) {
+		$this->registry["logs"]->uid = $params[0];
+		$this->registry["logs"]->set("service", "Объект <a href='" . $this->registry["uri"] . "objects/" . $params[2] . "/'>" . $params[2] . "</a>: " . $params[1], "");
+	}
 }
 ?>

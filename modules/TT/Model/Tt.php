@@ -2,6 +2,52 @@
 class Model_Tt extends Modules_Model {
 	private $task;
 	
+	private function getMD5($part) {
+		if (substr($part, 0, 1) != "/") {
+			$filename = mb_substr($part, 0, mb_strlen($part)-mb_strrpos($part, DIRECTORY_SEPARATOR));
+		
+			$sql = "SELECT `md5`
+	        FROM fm_fs
+	        WHERE `filename` = :filename AND pdirid = 1
+	        LIMIT 1";
+		
+			$res = $this->registry['db']->prepare($sql);
+			$param = array(":filename" => $filename);
+			$res->execute($param);
+			$row = $res->fetchAll(PDO::FETCH_ASSOC);
+		} else {
+			$filename = mb_substr($part, mb_strrpos($part, DIRECTORY_SEPARATOR) + 1, mb_strlen($part)-mb_strrpos($part, DIRECTORY_SEPARATOR));
+			$path = mb_substr($part, 0, mb_strrpos($part, DIRECTORY_SEPARATOR));
+		
+			if ($path . "/" == $this->registry["rootPublic"] . $this->registry["path"]["upload"]) {
+				$sql = "SELECT `md5`
+		        FROM fm_fs
+		        WHERE `filename` = :filename AND pdirid = 0
+		        LIMIT 1";
+		
+				$res = $this->registry['db']->prepare($sql);
+				$param = array(":filename" => $filename);
+				$res->execute($param);
+				$row = $res->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				$path = mb_substr($path, mb_strrpos($path, DIRECTORY_SEPARATOR) + 1, mb_strlen($path)-mb_strrpos($path, DIRECTORY_SEPARATOR));
+		
+				$sql = "SELECT f.md5
+		        FROM fm_fs AS f
+		        LEFT JOIN fm_dirs AS d ON (f.pdirid = d.id)
+		        WHERE f.filename = :filename AND d.name = :path
+		        LIMIT 1";
+		
+				$res = $this->registry['db']->prepare($sql);
+				$param = array(":filename" => $filename, ":path" => $path);
+				$res->execute($param);
+				$row = $res->fetchAll(PDO::FETCH_ASSOC);
+			}
+		}
+		
+		return $row[0]["md5"];
+	}
+	
 	public function getGroups() {
 		$sql = "SELECT id, `name`
         FROM group_tt
@@ -275,11 +321,6 @@ class Model_Tt extends Modules_Model {
 		}
 
 		for($i=0; $i<count($data); $i++) {
-
-			$inc_day = 0;
-			$inc_month = 0;
-			$inc = $data[$i]["iteration"];
-			$inc_type = $data[$i]["timetype_iteration"];
 			$start = strtotime($data[$i]["opening"]);
 			if (($days = $data[$i]["deadline"] / 60 / 60 / 24) < 1) {
 				$days = 1;
@@ -296,6 +337,15 @@ class Model_Tt extends Modules_Model {
 			} elseif ($data[$i]["type"] == "2") {
 				$curYear = date("Y", $start);
 				$curMonth = date("m", $start);
+				
+				$inc_day = 0;
+				$inc_month = 0;
+				if ($data[$i]["iteration"] != 0) {
+					$inc = $data[$i]["iteration"];
+				} else {
+					$inc = $days;
+				}
+				$inc_type = $data[$i]["timetype_iteration"];
 
 				while( ($curYear <= $year) ) {
 					for($l=0; $l<$days; $l++) {
@@ -324,7 +374,7 @@ class Model_Tt extends Modules_Model {
 		if (isset($this->registry["module_users"])) {
 			$user = $this->registry["module_users"];
 		}
-			
+		
 		$data = array(); $result = array();
 
 		$caltype = & $_SESSION["cal"];
@@ -335,7 +385,11 @@ class Model_Tt extends Modules_Model {
 		if ($caltype["type"] == 1) {
 			$sql_type = "WHERE t.who = " . $uid;
 		} else {
-			$sql_type = "WHERE tr.uid = " . $uid . " OR tr.all = 1 OR tr.gid = " . $user->getGidFromUid($uid);
+			if (isset($this->registry["module_users"])) {
+				$sql_type = "WHERE tr.uid = " . $uid . " OR tr.all = 1 OR tr.gid = " . $user->getGidFromUid($uid);
+			} else {
+				$sql_type = "WHERE tr.uid = " . $uid . " OR tr.all = 1 OR tr.gid = 1";
+			}
 		}
 
 		$year = date("Y", strtotime($date));
@@ -411,6 +465,8 @@ class Model_Tt extends Modules_Model {
 			$this->Pager();
 		}
 
+		$limitResult = array();
+		
 		for($i = $this->startRow; $i < $this->startRow + $this->limit; $i++) {
 			if (isset($result[$i])) {
 				$limitResult[] = $result[$i];
@@ -694,13 +750,28 @@ class Model_Tt extends Modules_Model {
 			// END email move task
 
 			if ($post["type"] == "0") {
+				
+				if ($post["startdate_global"] == "") {
+					$post["startdate_global"] = date("Y-m-d");
+				}
+				if ($post["starttime_global"] == "") {
+					$post["starttime_global"] = date("H:i:s");
+				}
 
 				$starttime = $post["startdate_global"] . " " . $post["starttime_global"];
+
 				$lifetime = 0;
 				$post["itertime"] = "";
 
 			} elseif ($post["type"] == "1") {
 				$post["itertime"] = "";
+				
+				if ($post["startdate_noiter"] == "") {
+					$post["startdate_noiter"] = date("Y-m-d");
+				}
+				if ($post["starttime_noiter"] == "") {
+					$post["starttime_noiter"] = date("H:i:s");
+				}
 
 				$starttime = $post["startdate_noiter"] . " " . $post["starttime_noiter"];
 
@@ -722,6 +793,13 @@ class Model_Tt extends Modules_Model {
 
 				}
 			} elseif ($post["type"] == "2") {
+				
+				if ($post["startdate_iter"] == "") {
+					$post["startdate_iter"] = date("Y-m-d");
+				}
+				if ($post["starttime_iter"] == "") {
+					$post["starttime_iter"] = date("H:i:s");
+				}
 
 				$starttime = $post["startdate_iter"] . " " . $post["starttime_iter"];
 
@@ -763,23 +841,12 @@ class Model_Tt extends Modules_Model {
 			if (!$mid) {
 				if (isset($post["attaches"])) {
 					foreach($post["attaches"] as $part) {
-						$filename = mb_substr($part, mb_strrpos($part, DIRECTORY_SEPARATOR) + 1, mb_strlen($part)-mb_strrpos($part, DIRECTORY_SEPARATOR));
-
-						$sql = "SELECT `md5`
-				        FROM fm_fs
-				        WHERE `filename` = :filename
-				        ORDER BY id DESC
-				        LIMIT 1";
-							
-						$res = $this->registry['db']->prepare($sql);
-						$param = array(":filename" => $filename);
-						$res->execute($param);
-						$fs = $res->fetchAll(PDO::FETCH_ASSOC);
+						$md5 = $this->getMD5($part);
 
 						$sql = "INSERT INTO troubles_attach (`tid`, `md5`) VALUES (:tid, :md5)";
 							
 						$res = $this->registry['db']->prepare($sql);
-						$param = array(":tid" => $tid, ":md5" => $fs[0]["md5"]);
+						$param = array(":tid" => $tid, ":md5" => $md5);
 						$res->execute($param);
 					}
 				}
@@ -900,6 +967,13 @@ class Model_Tt extends Modules_Model {
 				
 
 			if ($post["type"] == "0") {
+				
+				if ($post["startdate_global"] == "") {
+					$post["startdate_global"] = date("Y-m-d");
+				}
+				if ($post["starttime_global"] == "") {
+					$post["starttime_global"] = date("H:i:s");
+				}
 
 				$starttime = $post["startdate_global"] . " " . $post["starttime_global"];
 				$lifetime = 0;
@@ -907,6 +981,13 @@ class Model_Tt extends Modules_Model {
 
 			} elseif ($post["type"] == "1") {
 				$post["itertime"] = "";
+				
+				if ($post["startdate_noiter"] == "") {
+					$post["startdate_noiter"] = date("Y-m-d");
+				}
+				if ($post["starttime_noiter"] == "") {
+					$post["starttime_noiter"] = date("H:i:s");
+				}
 
 				$starttime = $post["startdate_noiter"] . " " . $post["starttime_noiter"];
 
@@ -928,6 +1009,13 @@ class Model_Tt extends Modules_Model {
 
 				}
 			} elseif ($post["type"] == "2") {
+				
+				if ($post["startdate_iter"] == "") {
+					$post["startdate_iter"] = date("Y-m-d");
+				}
+				if ($post["starttime_iter"] == "") {
+					$post["starttime_iter"] = date("H:i:s");
+				}
 
 				$starttime = $post["startdate_iter"] . " " . $post["starttime_iter"];
 
@@ -965,23 +1053,12 @@ class Model_Tt extends Modules_Model {
 					$res->execute($param);
 						
 					foreach($post["attaches"] as $part) {
-						$filename = mb_substr($part, mb_strrpos($part, DIRECTORY_SEPARATOR) + 1, mb_strlen($part)-mb_strrpos($part, DIRECTORY_SEPARATOR));
-
-						$sql = "SELECT `md5`
-				        FROM fm_fs
-				        WHERE `filename` = :filename
-				        ORDER BY id DESC
-				        LIMIT 1";
-							
-						$res = $this->registry['db']->prepare($sql);
-						$param = array(":filename" => $filename);
-						$res->execute($param);
-						$fs = $res->fetchAll(PDO::FETCH_ASSOC);
+						$md5 = $this->getMD5($part);
 
 						$sql = "INSERT INTO troubles_attach (`tid`, `md5`) VALUES (:tid, :md5)";
 							
 						$res = $this->registry['db']->prepare($sql);
-						$param = array(":tid" => $tid, ":md5" => $fs[0]["md5"]);
+						$param = array(":tid" => $tid, ":md5" => $md5);
 						$res->execute($param);
 					}
 				}
@@ -1349,11 +1426,6 @@ class Model_Tt extends Modules_Model {
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
 
 		for($i=0; $i<count($data); $i++) {
-
-			$inc_day = 0;
-			$inc_month = 0;
-			$inc = $data[$i]["iteration"];
-			$inc_type = $data[$i]["timetype_iteration"];
 			$start = strtotime($data[$i]["opening"]);
 			if (($days = $data[$i]["deadline"] / 60 / 60 / 24) < 1) {
 				$days = 1;
@@ -1368,6 +1440,15 @@ class Model_Tt extends Modules_Model {
 					$result[]["id"] = $data[$i]["id"];
 				}
 			} elseif ($data[$i]["type"] == "2") {
+				$inc_day = 0;
+				$inc_month = 0;
+				if ($data[$i]["iteration"] != 0) {
+					$inc = $data[$i]["iteration"];
+				} else {
+					$inc = $days;
+				}
+				$inc_type = $data[$i]["timetype_iteration"];
+				
 				$curYear = date("Y", $start);
 				$curMonth = date("m", $start);
 
@@ -1599,23 +1680,27 @@ class Model_Tt extends Modules_Model {
 
 		for($i=0; $i<count($data); $i++) {
 
-			$inc_day = 0;
-			$inc_month = 0;
-			$inc = $data[$i]["iteration"];
-			$inc_type = $data[$i]["timetype_iteration"];
 			$start = strtotime($data[$i]["opening"]);
 			$end = strtotime($data[$i]["ending"]);
 			if (($days = $data[$i]["deadline"] / 60 / 60 / 24) < 1) {
 				$days = 1;
 			}
 
-			if ($data[$i]["close"] != 0) {
+			if ($data[$i]["close"] == 1) {
 				$curDay = date("j", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
 				$curMonth = date("m", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
 				$curYear = date("Y", mktime(0, 0, 0, date("m", $end), date("d", $end), date("Y", $end)));
-
+			
 				if ( ($curYear == $year) and ($curMonth == $month) ) {
 					$result[$curDay]["close"]["num"]++;
+				}
+			} elseif ($data[$i]["type"] == "0") {
+				$curDay = date("j", mktime(0, 0, 0, date("m", $start), date("d", $start), date("Y", $start)));
+				$curMonth = date("m", mktime(0, 0, 0, date("m", $start), date("d", $start), date("Y", $start)));
+				$curYear = date("Y", mktime(0, 0, 0, date("m", $start), date("d", $start), date("Y", $start)));
+
+				if ( ($curYear == $year) and ($curMonth == $month) ) {
+					$result[$curDay]["noiter"]["num"]++;
 				}
 			} elseif ($data[$i]["type"] == "1") {
 				for($l=0; $l<$days; $l++) {
@@ -1629,6 +1714,14 @@ class Model_Tt extends Modules_Model {
 			} elseif ($data[$i]["type"] == "2") {
 				$curYear = date("Y", $start);
 				$curMonth = date("m", $start);
+				$inc_day = 0;
+				$inc_month = 0;
+				if ($data[$i]["iteration"] != '0') {
+					$inc = $data[$i]["iteration"];
+				} else {
+					$inc = $days;
+				}
+				$inc_type = $data[$i]["timetype_iteration"];
 
 				while( ($curYear <= $year) ) {
 					for($l=0; $l<$days; $l++) {
@@ -1734,23 +1827,12 @@ class Model_Tt extends Modules_Model {
 
 		if (isset($attaches["attaches"])) {
 			foreach($attaches["attaches"] as $part) {
-				$filename = mb_substr($part, mb_strrpos($part, DIRECTORY_SEPARATOR) + 1, mb_strlen($part)-mb_strrpos($part, DIRECTORY_SEPARATOR));
-
-				$sql = "SELECT `md5`
-		        FROM fm_fs
-		        WHERE `filename` = :filename
-		        ORDER BY id DESC
-		        LIMIT 1";
-				 
-				$res = $this->registry['db']->prepare($sql);
-				$param = array(":filename" => $filename);
-				$res->execute($param);
-				$fs = $res->fetchAll(PDO::FETCH_ASSOC);
+				$md5 = $this->getMD5($part);
 
 				$sql = "INSERT INTO troubles_discussion_attach (`tdid`, `md5`) VALUES (:tdid, :md5)";
 
 				$res = $this->registry['db']->prepare($sql);
-				$param = array(":tdid" => $tdid, ":md5" => $fs[0]["md5"]);
+				$param = array(":tdid" => $tdid, ":md5" => $md5);
 				$res->execute($param);
 			}
 		}
@@ -2131,23 +2213,13 @@ class Model_Tt extends Modules_Model {
 
 		if (isset($post["attaches"])) {
 			foreach($post["attaches"] as $part) {
-				$filename = mb_substr($part, mb_strrpos($part, DIRECTORY_SEPARATOR) + 1, mb_strlen($part)-mb_strrpos($part, DIRECTORY_SEPARATOR));
 
-				$sql = "SELECT `md5`
-		        FROM fm_fs
-		        WHERE `filename` = :filename
-		        ORDER BY id DESC
-		        LIMIT 1";
-				 
-				$res = $this->registry['db']->prepare($sql);
-				$param = array(":filename" => $filename);
-				$res->execute($param);
-				$fs = $res->fetchAll(PDO::FETCH_ASSOC);
+				$md5 = $this->getMD5($part);
 
 				$sql = "INSERT INTO draft_attach (`tid`, `md5`) VALUES (:tid, :md5)";
 					
 				$res = $this->registry['db']->prepare($sql);
-				$param = array(":tid" => $tid, ":md5" => $fs[0]["md5"]);
+				$param = array(":tid" => $tid, ":md5" => $md5);
 				$res->execute($param);
 			}
 		}
@@ -2376,23 +2448,12 @@ class Model_Tt extends Modules_Model {
 			$res->execute($param);
 				
 			foreach($post["attaches"] as $part) {
-				$filename = mb_substr($part, mb_strrpos($part, DIRECTORY_SEPARATOR) + 1, mb_strlen($part)-mb_strrpos($part, DIRECTORY_SEPARATOR));
-
-				$sql = "SELECT `md5`
-		        FROM fm_fs
-		        WHERE `filename` = :filename
-		        ORDER BY id DESC
-		        LIMIT 1";
-				 
-				$res = $this->registry['db']->prepare($sql);
-				$param = array(":filename" => $filename);
-				$res->execute($param);
-				$fs = $res->fetchAll(PDO::FETCH_ASSOC);
+				$md5 = $this->getMD5($part);
 
 				$sql = "INSERT INTO draft_attach (`tid`, `md5`) VALUES (:tid, :md5)";
-					
+				
 				$res = $this->registry['db']->prepare($sql);
-				$param = array(":tid" => $tid, ":md5" => $fs[0]["md5"]);
+				$param = array(":tid" => $tid, ":md5" => $md5);
 				$res->execute($param);
 			}
 		}
@@ -2470,6 +2531,25 @@ class Model_Tt extends Modules_Model {
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
 
 		return $data[0]["status"];
+	}
+	
+	function getDraftFile($did, $filename) {
+		$sql = "SELECT da.md5 AS `md5`
+		        FROM draft_attach AS da
+		        LEFT JOIN fm_fs AS fs ON (fs.md5 = da.md5)
+		        WHERE da.tid = :did AND fs.filename = :filename
+		        LIMIT 1";
+		 
+		$res = $this->registry['db']->prepare($sql);
+		$param = array(":did" => $did, ":filename" => $filename);
+		$res->execute($param);
+		$row = $res->fetchAll(PDO::FETCH_ASSOC);
+		
+		if (count($row) > 0) {
+			return $row[0]["md5"];
+		} else {
+			return FALSE;
+		}
 	}
 
 	function getFile($tid, $filename) {

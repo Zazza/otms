@@ -26,10 +26,16 @@ class Controller_Ajax_Objects extends Modules_Ajax {
     public function getInfo($params) {
         $id = $params["id"];
         
+        if (isset($this->registry["module_mail"])) {
+        	$mail = true;
+        } else {
+        	$mail = false;
+        }
+        
         $object = new Model_Object();
         $data = $object->getObject($id);
 
-        echo $this->view->render("objectInfo", array("data" => $data));
+        echo $this->view->render("objectInfo", array("data" => $data, "mail" => $mail));
     }
     
     public function addAdvancedNote($params) {

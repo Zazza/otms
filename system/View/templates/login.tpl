@@ -23,10 +23,19 @@ html, body {
     padding: 0;
     color: black;
 }
-input[type="text"], input[type="password"] {
-	background-color: #F0F0E7;
-	border: 1px solid #CCC;
-	color: black;
+
+input {
+    border: 1px solid #CCCCCC;
+    border-radius: 3px 3px 3px 3px;
+    color: #808080;
+    display: inline-block;
+    font-size: 13px;
+    line-height: 18px;
+    padding: 4px;
+}
+
+button {
+	height: 27px;
 }
 
 p {

@@ -14,5 +14,15 @@ class Controller_Ajax_Settings extends Engine_Interface {
 		$settings = new Model_Settings();
 		$settings->setFastmenu($fastmenu);
 	}
+	
+	public function clearMenu() {
+		$settings = new Model_Settings();
+		$settings->clearMenu();
+	}
+	
+	public function clearFastmenu() {
+		$settings = new Model_Settings();
+		$settings->clearFastmenu();
+	}
 }
 ?>

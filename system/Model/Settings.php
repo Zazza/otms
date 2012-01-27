@@ -129,5 +129,19 @@ class Model_Settings extends Engine_Model {
 
 		return $content;
 	}
+	
+	function clearMenu() {
+		$sql = "DELETE FROM otms_menu";
+		
+		$res = $this->registry['db']->prepare($sql);
+		$res->execute();
+	}
+	
+	function clearFastmenu() {
+		$sql = "DELETE FROM otms_fastmenu";
+		
+		$res = $this->registry['db']->prepare($sql);
+		$res->execute();
+	}
 }
 ?>

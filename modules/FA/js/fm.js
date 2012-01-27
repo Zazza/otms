@@ -11,12 +11,12 @@
 // Helper functions
 //
 
-var qq = qq || {};
+var qqfa = qqfa || {};
 
 /**
  * Adds all missing properties from second obj to first obj
  */ 
-qq.extend = function(first, second){
+qqfa.extend = function(first, second){
     for (var prop in second){
         first[prop] = second[prop];
     }
@@ -26,7 +26,7 @@ qq.extend = function(first, second){
  * Searches for a given element in the array, returns -1 if it is not present.
  * @param {Number} [from] The index at which to begin the search
  */
-qq.indexOf = function(arr, elt, from){
+qqfa.indexOf = function(arr, elt, from){
     if (arr.indexOf) return arr.indexOf(elt, from);
     
     from = from || 0;
@@ -42,7 +42,7 @@ qq.indexOf = function(arr, elt, from){
     return -1;  
 }; 
     
-qq.getUniqueId = (function(){
+qqfa.getUniqueId = (function(){
     var id = 0;
     return function(){ return id++; };
 })();
@@ -50,14 +50,14 @@ qq.getUniqueId = (function(){
 //
 // Events
 
-qq.attach = function(element, type, fn){
+qqfa.attach = function(element, type, fn){
     if (element.addEventListener){
         element.addEventListener(type, fn, false);
     } else if (element.attachEvent){
         element.attachEvent('on' + type, fn);
     }
 };
-qq.detach = function(element, type, fn){
+qqfa.detach = function(element, type, fn){
     if (element.removeEventListener){
         element.removeEventListener(type, fn, false);
     } else if (element.attachEvent){
@@ -65,7 +65,7 @@ qq.detach = function(element, type, fn){
     }
 };
 
-qq.preventDefault = function(e){
+qqfa.preventDefault = function(e){
     if (e.preventDefault){
         e.preventDefault();
     } else{
@@ -79,14 +79,14 @@ qq.preventDefault = function(e){
 /**
  * Insert node a before node b.
  */
-qq.insertBefore = function(a, b){
+qqfa.insertBefore = function(a, b){
     b.parentNode.insertBefore(a, b);
 };
-qq.remove = function(element){
+qqfa.remove = function(element){
     element.parentNode.removeChild(element);
 };
 
-qq.contains = function(parent, descendant){       
+qqfa.contains = function(parent, descendant){       
     // compareposition returns false in this case
     if (parent == descendant) return true;
     
@@ -101,7 +101,7 @@ qq.contains = function(parent, descendant){
  * Creates and returns element from html string
  * Uses innerHTML to create an element
  */
-qq.toElement = (function(){
+qqfa.toElement = (function(){
     var div = document.createElement('div');
     return function(html){
         div.innerHTML = html;
@@ -118,28 +118,28 @@ qq.toElement = (function(){
  * Sets styles for an element.
  * Fixes opacity in IE6-8.
  */
-qq.css = function(element, styles){
+qqfa.css = function(element, styles){
     if (styles.opacity != null){
         if (typeof element.style.opacity != 'string' && typeof(element.filters) != 'undefined'){
             styles.filter = 'alpha(opacity=' + Math.round(100 * styles.opacity) + ')';
         }
     }
-    qq.extend(element.style, styles);
+    qqfa.extend(element.style, styles);
 };
-qq.hasClass = function(element, name){
+qqfa.hasClass = function(element, name){
     var re = new RegExp('(^| )' + name + '( |$)');
     return re.test(element.className);
 };
-qq.addClass = function(element, name){
-    if (!qq.hasClass(element, name)){
+qqfa.addClass = function(element, name){
+    if (!qqfa.hasClass(element, name)){
         element.className += ' ' + name;
     }
 };
-qq.removeClass = function(element, name){
+qqfa.removeClass = function(element, name){
     var re = new RegExp('(^| )' + name + '( |$)');
     element.className = element.className.replace(re, ' ').replace(/^\s+|\s+$/g, "");
 };
-qq.setText = function(element, text){
+qqfa.setText = function(element, text){
     element.innerText = text;
     element.textContent = text;
 };
@@ -147,7 +147,7 @@ qq.setText = function(element, text){
 //
 // Selecting elements
 
-qq.children = function(element){
+qqfa.children = function(element){
     var children = [],
     child = element.firstChild;
 
@@ -161,7 +161,7 @@ qq.children = function(element){
     return children;
 };
 
-qq.getByClass = function(element, className){
+qqfa.getByClass = function(element, className){
     if (element.querySelectorAll){
         return element.querySelectorAll('.' + className);
     }
@@ -171,7 +171,7 @@ qq.getByClass = function(element, className){
     var len = candidates.length;
 
     for (var i = 0; i < len; i++){
-        if (qq.hasClass(candidates[i], className)){
+        if (qqfa.hasClass(candidates[i], className)){
             result.push(candidates[i]);
         }
     }
@@ -184,7 +184,7 @@ qq.getByClass = function(element, className){
  * 
  * how to use:
  *
- *    `qq.obj2url({a:'b',c:'d'},'http://any.url/upload?otherParam=value');`
+ *    `qqfa.obj2url({a:'b',c:'d'},'http://any.url/upload?otherParam=value');`
  *
  * will result in:
  *
@@ -194,7 +194,7 @@ qq.getByClass = function(element, className){
  * @param  String current querystring-part
  * @return String encoded querystring
  */
-qq.obj2url = function(obj, temp, prefixDone){
+qqfa.obj2url = function(obj, temp, prefixDone){
     var uristrings = [],
         prefix = '&',
         add = function(nextObj, i){
@@ -206,7 +206,7 @@ qq.obj2url = function(obj, temp, prefixDone){
             if ((nextTemp != 'undefined') && (i != 'undefined')) {  
                 uristrings.push(
                     (typeof nextObj === 'object') 
-                        ? qq.obj2url(nextObj, nextTemp, true)
+                        ? qqfa.obj2url(nextObj, nextTemp, true)
                         : (Object.prototype.toString.call(nextObj) === '[object Function]')
                             ? encodeURIComponent(nextTemp) + '=' + encodeURIComponent(nextObj())
                             : encodeURIComponent(nextTemp) + '=' + encodeURIComponent(nextObj)                                                          
@@ -217,7 +217,7 @@ qq.obj2url = function(obj, temp, prefixDone){
     if (!prefixDone && temp) {
       prefix = (/\?/.test(temp)) ? (/\?$/.test(temp)) ? '' : '&' : '?';
       uristrings.push(temp);
-      uristrings.push(qq.obj2url(obj));
+      uristrings.push(qqfa.obj2url(obj));
     } else if ((Object.prototype.toString.call(obj) === '[object Array]') && (typeof obj != 'undefined') ) {
         // we wont use a for-in-loop on an array (performance)
         for (var i = 0, len = obj.length; i < len; ++i){
@@ -243,12 +243,12 @@ qq.obj2url = function(obj, temp, prefixDone){
 //
 //
 
-var qq = qq || {};
+var qqfa = qqfa || {};
     
 /**
  * Creates upload button, validates upload, but doesn't create file list or dd. 
  */
-qq.FileUploaderBasic = function(o){
+qqfa.FileUploaderBasic = function(o){
     this._options = {
         // set to true to see the server response
         debug: false,
@@ -279,7 +279,7 @@ qq.FileUploaderBasic = function(o){
             alert(message);
         }               
     };
-    qq.extend(this._options, o);
+    qqfa.extend(this._options, o);
         
     // number of files being uploaded
     this._filesInProgress = 0;
@@ -292,7 +292,7 @@ qq.FileUploaderBasic = function(o){
     this._preventLeaveInProgress();         
 };
    
-qq.FileUploaderBasic.prototype = {
+qqfa.FileUploaderBasic.prototype = {
     setParams: function(params){
         this._options.params = params;
     },
@@ -302,9 +302,9 @@ qq.FileUploaderBasic.prototype = {
     _createUploadButton: function(element){
         var self = this;
         
-        return new qq.UploadButton({
+        return new qqfa.UploadButton({
             element: element,
-            multiple: this._options.multiple && qq.UploadHandlerXhr.isSupported(),
+            multiple: this._options.multiple && qqfa.UploadHandlerXhr.isSupported(),
             onChange: function(input){
                 self._onInputChange(input);
             }        
@@ -314,13 +314,13 @@ qq.FileUploaderBasic.prototype = {
         var self = this,
             handlerClass;        
         
-        if(qq.UploadHandlerXhr.isSupported()){           
+        if(qqfa.UploadHandlerXhr.isSupported()){           
             handlerClass = 'UploadHandlerXhr';                        
         } else {
             handlerClass = 'UploadHandlerForm';
         }
 
-        var handler = new qq[handlerClass]({
+        var handler = new qqfa[handlerClass]({
             debug: this._options.debug,
             action: this._options.action,         
             maxConnections: this._options.maxConnections,   
@@ -343,7 +343,7 @@ qq.FileUploaderBasic.prototype = {
     _preventLeaveInProgress: function(){
         var self = this;
         
-        qq.attach(window, 'beforeunload', function(e){
+        qqfa.attach(window, 'beforeunload', function(e){
             if (!self._filesInProgress){return;}
             
             var e = e || window.event;
@@ -368,7 +368,7 @@ qq.FileUploaderBasic.prototype = {
         this._filesInProgress--;        
     },
     _onInputChange: function(input){
-        if (this._handler instanceof qq.UploadHandlerXhr){                
+        if (this._handler instanceof qqfa.UploadHandlerXhr){                
             this._uploadFileList(input.files);                   
         } else {             
             if (this._validateFile(input)){                
@@ -472,53 +472,53 @@ qq.FileUploaderBasic.prototype = {
        
 /**
  * Class that creates upload widget with drag-and-drop and file list
- * @inherits qq.FileUploaderBasic
+ * @inherits qqfa.FileUploaderBasic
  */
-qq.FileUploader = function(o){
+qqfa.FileUploader = function(o){
     // call parent constructor
-    qq.FileUploaderBasic.apply(this, arguments);
+    qqfa.FileUploaderBasic.apply(this, arguments);
     
     // additional options    
-    qq.extend(this._options, {
+    qqfa.extend(this._options, {
         element: null,
-        // if set, will be used instead of qq-upload-list in template
+        // if set, will be used instead of qqfa-upload-list in template
         listElement: null,
                 
-        template: '<div class="qq-uploader">' + 
-                '<div class="qq-upload-drop-area"><span></span></div>' +
-                '<div class="qq-upload-button">Прикрепить</div>' +
-                '<ul class="qq-upload-list"></ul>' + 
+        template: '<div class="qqfa-uploader">' + 
+                '<div class="qqfa-upload-drop-area"><span></span></div>' +
+                '<div class="qqfa-upload-button">Прикрепить</div>' +
+                '<ul class="qqfa-upload-list"></ul>' + 
              '</div>',
 
         // template for one item in file list
         fileTemplate: '<li>' +
-                '<span class="qq-upload-file"></span>' +
-                '<span class="qq-upload-spinner"></span>' +
-                '<span class="qq-upload-size"></span>' +
-                '<a class="qq-upload-cancel" href="#">Отмена</a>' +
-                '<span class="qq-upload-failed-text">Ошибка</span>' +
+                '<span class="qqfa-upload-file"></span>' +
+                '<span class="qqfa-upload-spinner"></span>' +
+                '<span class="qqfa-upload-size"></span>' +
+                '<a class="qqfa-upload-cancel" href="#">Отмена</a>' +
+                '<span class="qqfa-upload-failed-text">Ошибка</span>' +
             '</li>',        
         
         classes: {
             // used to get elements from templates
-            button: 'qq-upload-button',
-            drop: 'qq-upload-drop-area',
-            dropActive: 'qq-upload-drop-area-active',
-            list: 'qq-upload-list',
+            button: 'qqfa-upload-button',
+            drop: 'qqfa-upload-drop-area',
+            dropActive: 'qqfa-upload-drop-area-active',
+            list: 'qqfa-upload-list',
                         
-            file: 'qq-upload-file',
-            spinner: 'qq-upload-spinner',
-            size: 'qq-upload-size',
-            cancel: 'qq-upload-cancel',
+            file: 'qqfa-upload-file',
+            spinner: 'qqfa-upload-spinner',
+            size: 'qqfa-upload-size',
+            cancel: 'qqfa-upload-cancel',
 
             // added to list item when upload completes
             // used in css to hide progress spinner
-            success: 'qq-upload-success',
-            fail: 'qq-upload-fail'
+            success: 'qqfa-upload-success',
+            fail: 'qqfa-upload-fail'
         }
     });
     // overwrite options with user supplied    
-    qq.extend(this._options, o);       
+    qqfa.extend(this._options, o);       
 
     this._element = this._options.element;
     this._element.innerHTML = this._options.template;        
@@ -533,14 +533,14 @@ qq.FileUploader = function(o){
 };
 
 // inherit from Basic Uploader
-qq.extend(qq.FileUploader.prototype, qq.FileUploaderBasic.prototype);
+qqfa.extend(qqfa.FileUploader.prototype, qqfa.FileUploaderBasic.prototype);
 
-qq.extend(qq.FileUploader.prototype, {
+qqfa.extend(qqfa.FileUploader.prototype, {
     /**
      * Gets one of the elements listed in this._options.classes
      **/
     _find: function(parent, type){                                
-        var element = qq.getByClass(parent, this._options.classes[type])[0];        
+        var element = qqfa.getByClass(parent, this._options.classes[type])[0];        
         if (!element){
             throw new Error('element not found ' + type);
         }
@@ -551,33 +551,33 @@ qq.extend(qq.FileUploader.prototype, {
         var self = this,
             dropArea = this._find(this._element, 'drop');                        
 
-        var dz = new qq.UploadDropZone({
+        var dz = new qqfa.UploadDropZone({
             element: dropArea,
             onEnter: function(e){
-                qq.addClass(dropArea, self._classes.dropActive);
+                qqfa.addClass(dropArea, self._classes.dropActive);
                 e.stopPropagation();
             },
             onLeave: function(e){
                 e.stopPropagation();
             },
             onLeaveNotDescendants: function(e){
-                qq.removeClass(dropArea, self._classes.dropActive);  
+                qqfa.removeClass(dropArea, self._classes.dropActive);  
             },
             onDrop: function(e){
                 dropArea.style.display = 'none';
-                qq.removeClass(dropArea, self._classes.dropActive);
+                qqfa.removeClass(dropArea, self._classes.dropActive);
                 self._uploadFileList(e.dataTransfer.files);    
             }
         });
                 
         dropArea.style.display = 'none';
 
-        qq.attach(document, 'dragenter', function(e){     
+        qqfa.attach(document, 'dragenter', function(e){     
             if (!dz._isValidFileDrag(e)) return; 
             
             dropArea.style.display = 'block';            
         });                 
-        qq.attach(document, 'dragleave', function(e){
+        qqfa.attach(document, 'dragleave', function(e){
             if (!dz._isValidFileDrag(e)) return;            
             
             var relatedTarget = document.elementFromPoint(e.clientX, e.clientY);
@@ -588,11 +588,11 @@ qq.extend(qq.FileUploader.prototype, {
         });                
     },
     _onSubmit: function(id, fileName){
-        qq.FileUploaderBasic.prototype._onSubmit.apply(this, arguments);
+        qqfa.FileUploaderBasic.prototype._onSubmit.apply(this, arguments);
         this._addToList(id, fileName);  
     },
     _onProgress: function(id, fileName, loaded, total){
-        qq.FileUploaderBasic.prototype._onProgress.apply(this, arguments);
+        qqfa.FileUploaderBasic.prototype._onProgress.apply(this, arguments);
 
         var item = this._getItemByFileId(id);
         var size = this._find(item, 'size');
@@ -605,28 +605,28 @@ qq.extend(qq.FileUploader.prototype, {
             text = this._formatSize(total);
         }          
         
-        qq.setText(size, text);         
+        qqfa.setText(size, text);         
     },
     _onComplete: function(id, fileName, result){
-        qq.FileUploaderBasic.prototype._onComplete.apply(this, arguments);
+        qqfa.FileUploaderBasic.prototype._onComplete.apply(this, arguments);
 
         // mark completed
         var item = this._getItemByFileId(id);                
-        qq.remove(this._find(item, 'cancel'));
-        qq.remove(this._find(item, 'spinner'));
+        qqfa.remove(this._find(item, 'cancel'));
+        qqfa.remove(this._find(item, 'spinner'));
         
         if (result.success){
-            qq.addClass(item, this._classes.success);    
+            qqfa.addClass(item, this._classes.success);    
         } else {
-            qq.addClass(item, this._classes.fail);
+            qqfa.addClass(item, this._classes.fail);
         }         
     },
     _addToList: function(id, fileName){
-        var item = qq.toElement(this._options.fileTemplate);                
-        item.qqFileId = id;
+        var item = qqfa.toElement(this._options.fileTemplate);                
+        item.qqfaFileId = id;
 
         var fileElement = this._find(item, 'file');        
-        qq.setText(fileElement, this._formatFileName(fileName));
+        qqfa.setText(fileElement, this._formatFileName(fileName));
         this._find(item, 'size').style.display = 'none';        
 
         this._listElement.appendChild(item);
@@ -637,7 +637,7 @@ qq.extend(qq.FileUploader.prototype, {
         // there can't be txt nodes in dynamically created list
         // and we can  use nextSibling
         while (item){            
-            if (item.qqFileId == id) return item;            
+            if (item.qqfaFileId == id) return item;            
             item = item.nextSibling;
         }          
     },
@@ -648,22 +648,22 @@ qq.extend(qq.FileUploader.prototype, {
         var self = this,
             list = this._listElement;            
         
-        qq.attach(list, 'click', function(e){            
+        qqfa.attach(list, 'click', function(e){            
             e = e || window.event;
             var target = e.target || e.srcElement;
             
-            if (qq.hasClass(target, self._classes.cancel)){                
-                qq.preventDefault(e);
+            if (qqfa.hasClass(target, self._classes.cancel)){                
+                qqfa.preventDefault(e);
                
                 var item = target.parentNode;
-                self._handler.cancel(item.qqFileId);
-                qq.remove(item);
+                self._handler.cancel(item.qqfaFileId);
+                qqfa.remove(item);
             }
         });
     }    
 });
     
-qq.UploadDropZone = function(o){
+qqfa.UploadDropZone = function(o){
     this._options = {
         element: null,  
         onEnter: function(e){},
@@ -672,7 +672,7 @@ qq.UploadDropZone = function(o){
         onLeaveNotDescendants: function(e){},   
         onDrop: function(e){}                       
     };
-    qq.extend(this._options, o); 
+    qqfa.extend(this._options, o); 
     
     this._element = this._options.element;
     
@@ -680,25 +680,25 @@ qq.UploadDropZone = function(o){
     this._attachEvents();   
 };
 
-qq.UploadDropZone.prototype = {
+qqfa.UploadDropZone.prototype = {
     _disableDropOutside: function(e){
         // run only once for all instances
-        if (!qq.UploadDropZone.dropOutsideDisabled ){
+        if (!qqfa.UploadDropZone.dropOutsideDisabled ){
 
-            qq.attach(document, 'dragover', function(e){
+            qqfa.attach(document, 'dragover', function(e){
                 if (e.dataTransfer){
                     e.dataTransfer.dropEffect = 'none';
                     e.preventDefault(); 
                 }           
             });
             
-            qq.UploadDropZone.dropOutsideDisabled = true; 
+            qqfa.UploadDropZone.dropOutsideDisabled = true; 
         }        
     },
     _attachEvents: function(){
         var self = this;              
                   
-        qq.attach(self._element, 'dragover', function(e){
+        qqfa.attach(self._element, 'dragover', function(e){
             if (!self._isValidFileDrag(e)) return;
             
             var effect = e.dataTransfer.effectAllowed;
@@ -712,25 +712,25 @@ qq.UploadDropZone.prototype = {
             e.preventDefault();                                                                    
         });
         
-        qq.attach(self._element, 'dragenter', function(e){
+        qqfa.attach(self._element, 'dragenter', function(e){
             if (!self._isValidFileDrag(e)) return;
                         
             self._options.onEnter(e);
         });
         
-        qq.attach(self._element, 'dragleave', function(e){
+        qqfa.attach(self._element, 'dragleave', function(e){
             if (!self._isValidFileDrag(e)) return;
             
             self._options.onLeave(e);
             
             var relatedTarget = document.elementFromPoint(e.clientX, e.clientY);                      
             // do not fire when moving a mouse over a descendant
-            if (qq.contains(this, relatedTarget)) return;
+            if (qqfa.contains(this, relatedTarget)) return;
                         
             self._options.onLeaveNotDescendants(e); 
         });
                 
-        qq.attach(self._element, 'drop', function(e){
+        qqfa.attach(self._element, 'drop', function(e){
             if (!self._isValidFileDrag(e)) return;
             
             e.preventDefault();
@@ -750,7 +750,7 @@ qq.UploadDropZone.prototype = {
     }        
 }; 
 
-qq.UploadButton = function(o){
+qqfa.UploadButton = function(o){
     this._options = {
         element: null,  
         // if set to true adds multiple attribute to file input      
@@ -758,16 +758,16 @@ qq.UploadButton = function(o){
         // name attribute of file input
         name: 'file',
         onChange: function(input){},
-        hoverClass: 'qq-upload-button-hover',
-        focusClass: 'qq-upload-button-focus'                       
+        hoverClass: 'qqfa-upload-button-hover',
+        focusClass: 'qqfa-upload-button-focus'                       
     };
     
-    qq.extend(this._options, o);
+    qqfa.extend(this._options, o);
         
     this._element = this._options.element;
     
     // make button suitable container for input
-    qq.css(this._element, {
+    qqfa.css(this._element, {
         position: 'relative',
         overflow: 'hidden',
         // Make sure browse button is in the right side
@@ -778,7 +778,7 @@ qq.UploadButton = function(o){
     this._input = this._createInput();
 };
 
-qq.UploadButton.prototype = {
+qqfa.UploadButton.prototype = {
     /* returns file input element */    
     getInput: function(){
         return this._input;
@@ -786,10 +786,10 @@ qq.UploadButton.prototype = {
     /* cleans/recreates the file input */
     reset: function(){
         if (this._input.parentNode){
-            qq.remove(this._input);    
+            qqfa.remove(this._input);    
         }                
         
-        qq.removeClass(this._element, this._options.focusClass);
+        qqfa.removeClass(this._element, this._options.focusClass);
         this._input = this._createInput();
     },    
     _createInput: function(){                
@@ -802,7 +802,7 @@ qq.UploadButton.prototype = {
         input.setAttribute("type", "file");
         input.setAttribute("name", this._options.name);
         
-        qq.css(input, {
+        qqfa.css(input, {
             position: 'absolute',
             // in Opera only 'browse' button
             // is clickable and it is located at
@@ -821,21 +821,21 @@ qq.UploadButton.prototype = {
         this._element.appendChild(input);
 
         var self = this;
-        qq.attach(input, 'change', function(){
+        qqfa.attach(input, 'change', function(){
             self._options.onChange(input);
         });
                 
-        qq.attach(input, 'mouseover', function(){
-            qq.addClass(self._element, self._options.hoverClass);
+        qqfa.attach(input, 'mouseover', function(){
+            qqfa.addClass(self._element, self._options.hoverClass);
         });
-        qq.attach(input, 'mouseout', function(){
-            qq.removeClass(self._element, self._options.hoverClass);
+        qqfa.attach(input, 'mouseout', function(){
+            qqfa.removeClass(self._element, self._options.hoverClass);
         });
-        qq.attach(input, 'focus', function(){
-            qq.addClass(self._element, self._options.focusClass);
+        qqfa.attach(input, 'focus', function(){
+            qqfa.addClass(self._element, self._options.focusClass);
         });
-        qq.attach(input, 'blur', function(){
-            qq.removeClass(self._element, self._options.focusClass);
+        qqfa.attach(input, 'blur', function(){
+            qqfa.removeClass(self._element, self._options.focusClass);
         });
 
         // IE and Opera, unfortunately have 2 tab stops on file input
@@ -852,7 +852,7 @@ qq.UploadButton.prototype = {
 /**
  * Class for uploading files, uploading itself is handled by child classes
  */
-qq.UploadHandlerAbstract = function(o){
+qqfa.UploadHandlerAbstract = function(o){
     this._options = {
         debug: false,
         action: '/upload.php',
@@ -862,13 +862,13 @@ qq.UploadHandlerAbstract = function(o){
         onComplete: function(id, fileName, response){},
         onCancel: function(id, fileName){}
     };
-    qq.extend(this._options, o);    
+    qqfa.extend(this._options, o);    
     
     this._queue = [];
     // params for files in queue
     this._params = [];
 };
-qq.UploadHandlerAbstract.prototype = {
+qqfa.UploadHandlerAbstract.prototype = {
     log: function(str){
         if (this._options.debug && window.console) console.log('[uploader] ' + str);        
     },
@@ -884,7 +884,7 @@ qq.UploadHandlerAbstract.prototype = {
         var len = this._queue.push(id);
 
         var copy = {};        
-        qq.extend(copy, params);
+        qqfa.extend(copy, params);
         this._params[id] = copy;        
                 
         // if too many active uploads, wait...
@@ -935,7 +935,7 @@ qq.UploadHandlerAbstract.prototype = {
      * Removes element from queue, starts upload of next
      */
     _dequeue: function(id){
-        var i = qq.indexOf(this._queue, id);
+        var i = qqfa.indexOf(this._queue, id);
         this._queue.splice(i, 1);
                 
         var max = this._options.maxConnections;
@@ -949,26 +949,26 @@ qq.UploadHandlerAbstract.prototype = {
 
 /**
  * Class for uploading files using form and iframe
- * @inherits qq.UploadHandlerAbstract
+ * @inherits qqfa.UploadHandlerAbstract
  */
-qq.UploadHandlerForm = function(o){
-    qq.UploadHandlerAbstract.apply(this, arguments);
+qqfa.UploadHandlerForm = function(o){
+    qqfa.UploadHandlerAbstract.apply(this, arguments);
        
     this._inputs = {};
 };
-// @inherits qq.UploadHandlerAbstract
-qq.extend(qq.UploadHandlerForm.prototype, qq.UploadHandlerAbstract.prototype);
+// @inherits qqfa.UploadHandlerAbstract
+qqfa.extend(qqfa.UploadHandlerForm.prototype, qqfa.UploadHandlerAbstract.prototype);
 
-qq.extend(qq.UploadHandlerForm.prototype, {
+qqfa.extend(qqfa.UploadHandlerForm.prototype, {
     add: function(fileInput){
-        fileInput.setAttribute('name', 'qqfile');
-        var id = 'qq-upload-handler-iframe' + qq.getUniqueId();       
+        fileInput.setAttribute('name', 'qqfafile');
+        var id = 'qqfa-upload-handler-iframe' + qqfa.getUniqueId();       
         
         this._inputs[id] = fileInput;
         
         // remove file input from DOM
         if (fileInput.parentNode){
-            qq.remove(fileInput);
+            qqfa.remove(fileInput);
         }
                 
         return id;
@@ -989,7 +989,7 @@ qq.extend(qq.UploadHandlerForm.prototype, {
             // trigger ie6 prompt on https
             iframe.setAttribute('src', 'javascript:false;');
 
-            qq.remove(iframe);
+            qqfa.remove(iframe);
         }
     },     
     _upload: function(id, params){                        
@@ -1017,17 +1017,17 @@ qq.extend(qq.UploadHandlerForm.prototype, {
             delete self._inputs[id];
             // timeout added to fix busy state in FF3.6
             setTimeout(function(){
-                qq.remove(iframe);
+                qqfa.remove(iframe);
             }, 1);
         });
 
         form.submit();        
-        qq.remove(form);        
+        qqfa.remove(form);        
         
         return id;
     }, 
     _attachLoadEvent: function(iframe, callback){
-        qq.attach(iframe, 'load', function(){
+        qqfa.attach(iframe, 'load', function(){
             // when we remove iframe from dom
             // the request stops, but in IE load
             // event fires
@@ -1078,7 +1078,7 @@ qq.extend(qq.UploadHandlerForm.prototype, {
         // var iframe = document.createElement('iframe');
         // iframe.setAttribute('name', id);
 
-        var iframe = qq.toElement('<iframe src="javascript:false;" name="' + id + '" />');
+        var iframe = qqfa.toElement('<iframe src="javascript:false;" name="' + id + '" />');
         // src="javascript:false;" removes ie6 prompt on https
 
         iframe.setAttribute('id', id);
@@ -1097,9 +1097,9 @@ qq.extend(qq.UploadHandlerForm.prototype, {
         // form.setAttribute('method', 'post');
         // form.setAttribute('enctype', 'multipart/form-data');
         // Because in this case file won't be attached to request
-        var form = qq.toElement('<form method="post" enctype="multipart/form-data"></form>');
+        var form = qqfa.toElement('<form method="post" enctype="multipart/form-data"></form>');
 
-        var queryString = qq.obj2url(params, this._options.action);
+        var queryString = qqfa.obj2url(params, this._options.action);
 
         form.setAttribute('action', queryString);
         form.setAttribute('target', iframe.name);
@@ -1112,10 +1112,10 @@ qq.extend(qq.UploadHandlerForm.prototype, {
 
 /**
  * Class for uploading files using xhr
- * @inherits qq.UploadHandlerAbstract
+ * @inherits qqfa.UploadHandlerAbstract
  */
-qq.UploadHandlerXhr = function(o){
-    qq.UploadHandlerAbstract.apply(this, arguments);
+qqfa.UploadHandlerXhr = function(o){
+    qqfa.UploadHandlerAbstract.apply(this, arguments);
 
     this._files = [];
     this._xhrs = [];
@@ -1125,7 +1125,7 @@ qq.UploadHandlerXhr = function(o){
 };
 
 // static method
-qq.UploadHandlerXhr.isSupported = function(){
+qqfa.UploadHandlerXhr.isSupported = function(){
     var input = document.createElement('input');
     input.type = 'file';        
     
@@ -1135,17 +1135,17 @@ qq.UploadHandlerXhr.isSupported = function(){
         typeof (new XMLHttpRequest()).upload != "undefined" );       
 };
 
-// @inherits qq.UploadHandlerAbstract
-qq.extend(qq.UploadHandlerXhr.prototype, qq.UploadHandlerAbstract.prototype)
+// @inherits qqfa.UploadHandlerAbstract
+qqfa.extend(qqfa.UploadHandlerXhr.prototype, qqfa.UploadHandlerAbstract.prototype)
 
-qq.extend(qq.UploadHandlerXhr.prototype, {
+qqfa.extend(qqfa.UploadHandlerXhr.prototype, {
     /**
      * Adds file to the queue
      * Returns id to use with upload, cancel
      **/    
     add: function(file){
         if (!(file instanceof File)){
-            throw new Error('Passed obj in not a File (in qq.UploadHandlerXhr)');
+            throw new Error('Passed obj in not a File (in qqfa.UploadHandlerXhr)');
         }
                 
         return this._files.push(file) - 1;        
@@ -1194,8 +1194,8 @@ qq.extend(qq.UploadHandlerXhr.prototype, {
 
         // build query string
         params = params || {};
-        params['qqfile'] = name;
-        var queryString = qq.obj2url(params, this._options.action);
+        params['qqfafile'] = name;
+        var queryString = qqfa.obj2url(params, this._options.action);
 
         xhr.open("POST", queryString, true);
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");

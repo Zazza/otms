@@ -40,7 +40,7 @@ class Controller_Users_Tasks extends Controller_Users {
 		if ($this->args[0] == "tasks") {
 
 			if (isset($this->args[1])) {
-				$groups->links = "/tasks/" . $this->args[1] . "/";
+				$groups->links = "users/tasks/" . $this->args[1] . "/";
 			}
 
 			if (isset($_GET["page"])) {

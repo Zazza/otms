@@ -31,7 +31,7 @@
 }
 
 #sday, #fday {	height: 16px; width: 18px; font-size: 14px; margin-right: 5px }
-#smonth, #fmonth, #month { height: 24px; width: 85px; font-size: 14px; margin-right: 5px }
+#smonth, #fmonth, #month { height: 27px; width: 85px; font-size: 14px; margin-right: 5px }
 #syear, #fyear { height: 16px; width: 34px; font-size: 14px; margin-right: 5px }
 #sbut, #fbut { border: 1px solid #ccc; height: 16px; width: 84px; text-align: center; font-size: 12px }
 

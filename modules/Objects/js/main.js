@@ -38,7 +38,8 @@ function getInfo(id) {
 		url: url + "ajax/objects/",
 		data: data,
 		success: function(res) {
-       	   $('<div title="Информация">' + res + '</div>').dialog({ width: 350 });		}
+       	   $('<div title="Информация">' + res + '</div>').dialog({ width: 600 });
+		}
 	});
 }
 

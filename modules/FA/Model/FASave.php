@@ -2,7 +2,7 @@
 class Model_FASave extends Modules_Model {
 	private $filename = null;
 	private $md5 = null;
-
+	
 	function save() {
 		if ($this->registry["auth"]) {
 			$input = fopen("php://input", "r");
@@ -32,7 +32,7 @@ class Model_FASave extends Modules_Model {
 	}
 
 	function getName() {
-		$this->filename = $_GET['qqfile'];
+		$this->filename = $_GET['qqfafile'];
 		$this->md5 = md5($this->filename . date("YmdHis"));
 
 		return $this->filename;

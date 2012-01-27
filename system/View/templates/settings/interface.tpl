@@ -1,10 +1,12 @@
 <p><b>Меню:</b></p>
 <ul id="temp_menu" style="overflow: hidden; margin: 8px 12px"></ul>
 <input type="button" id="saveMenu" value="Сохранить" />
+<input type="button" id="clearMenu" value="Сбросить" style="color: red" />
 
 <p><b>Панель быстрого запуска:</b></p>
 <ul id="temp_fastmenu" style="overflow: hidden; margin: 8px 12px"></ul>
 <input type="button" id="saveFastmenu" value="Сохранить" />
+<input type="button" id="clearFastmenu" value="Сбросить" style="color: red" />
 
 <script type="text/javascript">
 
@@ -56,6 +58,30 @@ $("#saveFastmenu").click(function() {
 	var json = "{" + temp_fastmenu.join(",") + "}";
 	
 	var data = "action=saveFastmenu&json=" + json;
+	$.ajax({
+		type: "POST",
+    	url: "{{ registry.uri }}ajax/settings/",
+    	data: data,
+		success: function(res) {
+            document.location.href = document.location.href;
+		}
+	});
+});
+
+$("#clearMenu").click(function() {
+	var data = "action=clearMenu";
+	$.ajax({
+		type: "POST",
+    	url: "{{ registry.uri }}ajax/settings/",
+    	data: data,
+		success: function(res) {
+            document.location.href = document.location.href;
+		}
+	});
+});
+
+$("#clearFastmenu").click(function() {
+	var data = "action=clearFastmenu";
 	$.ajax({
 		type: "POST",
     	url: "{{ registry.uri }}ajax/settings/",

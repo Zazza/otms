@@ -169,7 +169,7 @@
             <input type="text" style="width: 90px" name="lifetime_iter" value="{{ data.0.deadline }}" />
             </div>
             
-            <div style="float: left; width: 300px; clear: none; padding: 0 2px">
+            <div style="float: left; clear: none; padding: 0 2px">
             <select name="timetype_iter">
                 <option value="min" {% if data.0.deadline_date == "минут" %}selected="selected"{% endif %}>минут</option>
                 <option value="hour" {% if data.0.deadline_date == "минут" %}selected="selected"{% endif %}>часов</option>
@@ -207,7 +207,7 @@
 </div>
 
 <script type="text/javascript">
-$(function(){
+//$(function(){
 	changeType();
 	
 	$("#type").change(function(){
@@ -225,7 +225,7 @@ $(function(){
 		selected: 0
 		{% endif %}
 	});
-});
+//});
 
 $(".startdate").datepicker({
     dayName: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],

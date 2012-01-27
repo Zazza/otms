@@ -46,7 +46,11 @@
 
 
 <div style="text-align: right">
+{% if type != "draft" %}
 <a class="title" style="color: #048" href="{{ registry.uri }}tt/{{ data.0.id }}/">№{{ data.0.id }}</a>
+{% else %}
+<a class="title" style="color: #048" href="{{ registry.uri }}tt/draft/{{ data.0.id }}/">№{{ data.0.id }}</a>
+{% endif %}
 </div>
 
 <div style="text-align: right; font-size: 12px; padding-bottom: 3px; color: green">
@@ -122,10 +126,14 @@
 {% if data.0.attach %}
 <div class="sel" style="float: left; background-color: #EEF; margin-left: 70px">
 {% for part in data.0.attach %}
+{% if type != "draft" %}
 {% if data.0.remote_id != 0 %}
 <a class="attach" style="margin-right: 10px; cursor: pointer" href="{{ registry.uri }}tt/attach/?remote=1&tid={{ data.0.id }}&filename={{ part.filename }}">{{ part.filename }}</a>
 {% else %}
 <a class="attach" style="margin-right: 10px; cursor: pointer" href="{{ registry.uri }}tt/attach/?tid={{ data.0.id }}&filename={{ part.filename }}">{{ part.filename }}</a>
+{% endif %}
+{% else %}
+<a class="attach" style="margin-right: 10px; cursor: pointer" href="{{ registry.uri }}tt/attach/?did={{ data.0.id }}&filename={{ part.filename }}">{{ part.filename }}</a>
 {% endif %}
 {% endfor %}
 </div>

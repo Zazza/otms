@@ -7,6 +7,32 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 
+CREATE TABLE IF NOT EXISTS `chat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cid` int(11) NOT NULL,
+  `who` int(11) NOT NULL,
+  `text` varchar(2048) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `who` (`who`),
+  KEY `cid` (`cid`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `chat_room` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `parts` varchar(1024) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `chat_room_part` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cid` (`cid`,`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `comments_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` varchar(32) NOT NULL,
@@ -61,6 +87,28 @@ CREATE TABLE IF NOT EXISTS `draft_responsible` (
   UNIQUE KEY `uniq` (`tid`,`uid`,`gid`,`all`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `fm_dirs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `pid` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(64) NOT NULL,
+  `close` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+INSERT INTO `fm_dirs` (`id`, `uid`, `pid`, `name`, `close`) VALUES
+(1, 1, 0, 'attaches', 1);
+
+CREATE TABLE IF NOT EXISTS `fm_dirs_chmod` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `did` int(11) NOT NULL,
+  `right` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+INSERT INTO `fm_dirs_chmod` (`id`, `did`, `right`) VALUES
+(1, 1, '{"frall":"true"}');
+
 CREATE TABLE IF NOT EXISTS `fm_fs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `md5` varchar(64) NOT NULL,
@@ -68,6 +116,30 @@ CREATE TABLE IF NOT EXISTS `fm_fs` (
   `pdirid` int(11) NOT NULL DEFAULT '0',
   `size` int(11) NOT NULL,
   `close` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `fm_fs_chmod` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fid` int(11) NOT NULL,
+  `right` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `fm_fs_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fid` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `uid` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `fm_text` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `text` text NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -85,10 +157,34 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `oid` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 INSERT INTO `logs` (`id`, `type`, `event`, `uid`, `oid`, `timestamp`) VALUES
-(1, 'task', 'Новая задача <a href=''/freeotms/tt/1/''>1</a>', 1, 1, '2011-12-22 14:11:20');
+(1, 'task', 'Новая задача <a href=''/otms/tt/1/''>1</a>', 1, 1, '2011-12-22 13:24:28'),
+(2, 'task', 'Завершена задача <a href=''/otms/tt/1/''>1</a>', 1, 1, '2011-12-22 13:41:52'),
+(3, 'task', 'Новая задача <a href=''/otms/tt/2/''>2</a>', 1, 2, '2011-12-22 13:57:10');
+
+CREATE TABLE IF NOT EXISTS `logs_closed` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `eid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+INSERT INTO `logs_closed` (`id`, `eid`, `uid`) VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 3, 1);
+
+CREATE TABLE IF NOT EXISTS `logs_dashajax` (
+  `uid` int(11) NOT NULL,
+  `lid` int(11) NOT NULL,
+  UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `logs_dashajax` (`uid`, `lid`) VALUES
+(1, 3);
 
 CREATE TABLE IF NOT EXISTS `logs_object` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -99,10 +195,43 @@ CREATE TABLE IF NOT EXISTS `logs_object` (
   KEY `log_oid` (`log_oid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY KEY (id)
-PARTITIONS 10 */ AUTO_INCREMENT=2 ;
+PARTITIONS 10 */ AUTO_INCREMENT=3 ;
 
 INSERT INTO `logs_object` (`id`, `log_oid`, `key`, `val`) VALUES
-(1, 1, 'Текст', 'r');
+(2, 3, 'Текст', 'fff'),
+(1, 1, 'Текст', 'test');
+
+CREATE TABLE IF NOT EXISTS `mail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uidl` varchar(64) NOT NULL,
+  `read` tinyint(4) NOT NULL DEFAULT '0',
+  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `to` varchar(128) NOT NULL,
+  `subject` text NOT NULL,
+  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `personal` varchar(256) NOT NULL DEFAULT '0',
+  `email` varchar(128) NOT NULL,
+  `uid` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `mail_attach` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mid` int(11) NOT NULL,
+  `tid` int(11) NOT NULL,
+  `tdid` int(11) NOT NULL,
+  `md5` varchar(64) NOT NULL,
+  `filename` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `mail_attach_out` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mid` int(11) NOT NULL,
+  `md5` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `mail_contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -110,6 +239,69 @@ CREATE TABLE IF NOT EXISTS `mail_contacts` (
   `email` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `oid` (`oid`,`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `mail_folders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `folder` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `mail_out` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `to` varchar(128) NOT NULL,
+  `subject` varchar(256) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `email` varchar(128) NOT NULL,
+  `uid` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `mail_sort` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sort_id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `type` varchar(16) NOT NULL,
+  `val` varchar(128) NOT NULL,
+  `folder_id` int(11) NOT NULL,
+  `task` text NOT NULL,
+  `action` varchar(8) NOT NULL DEFAULT 'move',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`uid`,`type`,`val`,`folder_id`),
+  KEY `action` (`action`),
+  KEY `sort_id` (`sort_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `mail_text` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mid` int(11) NOT NULL,
+  `type` varchar(16) NOT NULL,
+  `text` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `mid` (`mid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+/*!50100 PARTITION BY KEY (id)
+PARTITIONS 10 */ AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `mail_text_out` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mid` int(11) NOT NULL,
+  `type` varchar(16) NOT NULL,
+  `text` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+/*!50100 PARTITION BY KEY (id)
+PARTITIONS 10 */ AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `note` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `title` varchar(128) NOT NULL,
+  `content` text NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `objects` (
@@ -177,7 +369,7 @@ CREATE TABLE IF NOT EXISTS `otms_fastmenu` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 INSERT INTO `otms_fastmenu` (`id`, `content`) VALUES
-(1, '{"0":"\n<img src="/freeotms/img/plus-button.png" alt="" style="vertical-align: middle;" border="0">\nНовая задача\n"}');
+(1, '{"0":"\n<img src="/otms/img/dashboard.png" alt="" style="vertical-align: middle;" border="0">\nDashboard\n","1":"\n<img src="/otms/img/plus-button.png" alt="" style="vertical-align: middle;" border="0">\nНовая задача\n","2":"\n    <img style="vertical-align: middle;" src="/otms/img/left/mail-plus.png" alt="" border="0">\n    Новое письмо\n","3":"\n<img style="vertical-align: middle;" src="/otms/img/users.png" alt="" border="0">\nЧаты\n","4":"\n	<img src="/otms/img/folder--plus.png" title="Файловый менеджер" alt="" style="vertical-align: middle;" border="0">\n	ФМ\n"}');
 
 CREATE TABLE IF NOT EXISTS `otms_mail` (
   `email` varchar(128) NOT NULL,
@@ -197,7 +389,7 @@ CREATE TABLE IF NOT EXISTS `otms_menu` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 INSERT INTO `otms_menu` (`id`, `content`) VALUES
-(1, '{"0":"Задачи","1":"Объекты","2":"Пользователи","3":"Система"}');
+(1, '{"0":"Задачи","1":"Почта","2":"Объекты","3":"Пользователи","4":"Система"}');
 
 CREATE TABLE IF NOT EXISTS `templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -240,10 +432,11 @@ CREATE TABLE IF NOT EXISTS `troubles` (
   `cuid` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 INSERT INTO `troubles` (`id`, `remote_id`, `mail_id`, `oid`, `who`, `imp`, `secure`, `text`, `opening`, `edittime`, `ending`, `gid`, `close`, `cuid`) VALUES
-(1, 0, 0, 0, 1, 3, 0, 'r', '2011-12-22 14:11:20', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0, 0);
+(1, 0, 0, 0, 1, 3, 0, 'test', '2011-12-22 13:24:28', '0000-00-00 00:00:00', '2011-12-22 13:41:52', 0, 1, 1),
+(2, 0, 0, 0, 1, 3, 0, 'fff', '2011-12-22 13:57:10', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0, 0);
 
 CREATE TABLE IF NOT EXISTS `troubles_attach` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -251,10 +444,11 @@ CREATE TABLE IF NOT EXISTS `troubles_attach` (
   `md5` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tid` (`tid`,`md5`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 INSERT INTO `troubles_attach` (`id`, `tid`, `md5`) VALUES
-(1, 1, '5d835227fb3b21a1796198a3a436bf78');
+(1, 1, 'dd3b91ef83d3796e9fd811bfa8eb79dc'),
+(2, 2, 'afbb8bcf10965a96fc3cb64cfa1f24be');
 
 CREATE TABLE IF NOT EXISTS `troubles_deadline` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -265,10 +459,11 @@ CREATE TABLE IF NOT EXISTS `troubles_deadline` (
   `iteration` int(10) unsigned NOT NULL DEFAULT '0',
   `timetype_iteration` varchar(8) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 INSERT INTO `troubles_deadline` (`id`, `tid`, `type`, `opening`, `deadline`, `iteration`, `timetype_iteration`) VALUES
-(1, 1, 0, '2011-12-22 15:10:59', 0, 0, 'day');
+(1, 1, 0, '2011-12-22 14:21:09', 0, 0, 'day'),
+(2, 2, 0, '2011-12-22 14:55:35', 0, 0, 'day');
 
 CREATE TABLE IF NOT EXISTS `troubles_discussion` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -290,6 +485,17 @@ CREATE TABLE IF NOT EXISTS `troubles_discussion_attach` (
   `md5` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tid` (`tdid`,`md5`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `troubles_remote_contact` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(64) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `soname` varchar(64) NOT NULL,
+  `avatar` varchar(64) NOT NULL,
+  `group` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `troubles_responsible` (
@@ -316,10 +522,11 @@ CREATE TABLE IF NOT EXISTS `troubles_view` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uid` (`uid`,`tid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 INSERT INTO `troubles_view` (`id`, `uid`, `tid`, `timestamp`) VALUES
-(1, 1, 1, '2011-12-22 14:11:24');
+(1, 1, 1, '2011-12-22 13:41:52'),
+(2, 1, 2, '2011-12-22 13:57:13');
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -363,6 +570,24 @@ CREATE TABLE IF NOT EXISTS `users_group` (
 INSERT INTO `users_group` (`id`, `name`) VALUES
 (1, 'OTMS');
 
+CREATE TABLE IF NOT EXISTS `users_mail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(4) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `email` varchar(64) NOT NULL,
+  `server` varchar(128) NOT NULL,
+  `protocol` varchar(8) NOT NULL,
+  `port` int(11) NOT NULL,
+  `login` varchar(64) NOT NULL,
+  `password` varchar(64) NOT NULL,
+  `ssl` varchar(16) NOT NULL,
+  `default` tinyint(4) NOT NULL DEFAULT '0',
+  `clear` tinyint(4) NOT NULL DEFAULT '1',
+  `clear_days` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `type` (`type`,`uid`,`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `users_priv` (
   `id` int(11) NOT NULL,
   `admin` tinyint(1) NOT NULL DEFAULT '0',
@@ -391,7 +616,7 @@ CREATE TABLE IF NOT EXISTS `users_subgroup` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 INSERT INTO `users_subgroup` (`id`, `pid`, `name`) VALUES
 (1, 1, 'Администратор');

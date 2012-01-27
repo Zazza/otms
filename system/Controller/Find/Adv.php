@@ -36,7 +36,7 @@ class Controller_Find_Adv extends Controller_Find {
                     $obj = $object->getShortObject($part["id"]);
                     $advInfo = $ai->getAdvancedInfo($part["id"]);
                     $numAdvInfo = $ai->getNumAdvancedInfo($part["id"]);
-                    $this->view->objectMain(array("ui" => $this->registry["ui"], "obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles));
+                    $this->view->find_objectMain(array("ui" => $this->registry["ui"], "obj" => $obj, "advInfo" => $advInfo, "numAdvInfo" => $numAdvInfo, "numTroubles" => $numTroubles));
                 }
             
                 //Отобразим пейджер

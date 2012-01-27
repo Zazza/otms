@@ -22,7 +22,7 @@
 <span>
 <select name="year" id="year">
     {% for part in calYear %}
-    <option value="{{ part }}">{{ part }}</option>
+    <option value="{{ part }}"{% if year == part %}selected="selected"{% endif %}>{{ part }}</option>
     {% endfor %}
 </select>
 </span>

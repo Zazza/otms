@@ -1,10 +1,16 @@
 <?php
 class Model_Object extends Modules_Model {
-    public function addObject($post) {
+    public function addObject($post, $uid = 0) {
+    	if ($uid == 0) {
+    		$uid = $this->registry["ui"]["id"];
+    	} else {
+    		$this->registry["logs"]->uid = $uid;
+    	}
+    	
         $sql = "INSERT INTO objects (template, typeid, uid) VALUES (:tpl, :ttypeid, :uid)";
         
         $res = $this->registry['db']->prepare($sql);
-        $param = array(":tpl" => $post["tid"], ":ttypeid" => $post["ttypeid"], ":uid" => $this->registry["ui"]["id"]);
+        $param = array(":tpl" => $post["tid"], ":ttypeid" => $post["ttypeid"], ":uid" => $uid);
         $res->execute($param);
 
 		$oid = $this->registry['db']->lastInsertId();
@@ -43,9 +49,7 @@ class Model_Object extends Modules_Model {
     }
     
     public function getShortObject($id) {
-    	$this->memcached->set("obj" . $id);
-    	
-    	if (!$this->memcached->load()) {
+
 	        $sql = "SELECT o.id AS id, o.timestamp AS `timestamp`, o.template AS tid, temp.id AS type_id, temp.name AS type_name, t.name AS tname, ov.fid AS fid, tf.field AS `field`, tf.main AS `main`, ov.val AS val
 					FROM objects AS o
 	                LEFT JOIN objects_vals AS ov ON (ov.oid = o.id)
@@ -80,11 +84,6 @@ class Model_Object extends Modules_Model {
 			} else {
 				return false;
 			}
-			
-			$this->memcached->save($rows);
-    	} else {
-    		$rows = $this->memcached->get();
-    	}
     	
     	if (count($rows) > 0) {
     		return $rows;
@@ -158,10 +157,6 @@ class Model_Object extends Modules_Model {
         
         $rows = FALSE;
         
-        $this->memcached->set("obj" . $id);
-        
-        if (!$this->memcached->load()) {
-        
 	        $sql = "SELECT o.id AS id, o.timestamp AS `timestamp`, o.template AS tid, t.name AS tname, ov.fid AS fid, tf.field AS `field`, tf.main AS `main`, tf.expand AS `expand`, ov.val AS val, o.uid AS auid, author.name AS aname, author.soname AS asoname, o.timestamp AS adate, ov.uid AS euid, editor.name AS ename, editor.soname AS esoname, ov.timestamp AS edate
 					FROM objects AS o
 	                LEFT JOIN objects_vals AS ov ON (ov.oid = o.id)
@@ -208,11 +203,6 @@ class Model_Object extends Modules_Model {
 	                $rows[] = $part;
 	            }
 	        }
-	        
-	        $this->memcached->save($rows);
-        } else {
-        	$rows = $this->memcached->get();
-        }
 
         return $rows;
     }
@@ -267,7 +257,13 @@ class Model_Object extends Modules_Model {
         return $data;
     }
     
-    public function editObject($post) {
+    public function editObject($post, $uid = 0) {
+    	if ($uid == 0) {
+    		$uid = $this->registry["ui"]["id"];
+    	} else {
+    		$this->registry["logs"]->uid = $uid;
+    	}
+    	
     	$template = new Model_Template();
     	
         foreach ($post as $key=>$val) {
@@ -275,7 +271,7 @@ class Model_Object extends Modules_Model {
                 $sql = "REPLACE INTO objects_vals (val, oid, fid, uid) VALUES (:val, :oid, :fid, :uid)";
                 
                 $res = $this->registry['db']->prepare($sql);
-                $param = array(":oid" => $post["tid"], ":fid" => $key, ":val" => strip_tags($val, "<a>"), ":uid" => $this->registry["ui"]["id"]);
+                $param = array(":oid" => $post["tid"], ":fid" => $key, ":val" => strip_tags($val, "<a>"), ":uid" => $uid);
                 $res->execute($param);
                 
                 $obj[$key] = strip_tags($val, "<a>");
@@ -326,9 +322,6 @@ class Model_Object extends Modules_Model {
         $string = "Правка объекта <a href='" . $this->registry["uri"] . "objects/" . $post["tid"] . "/'>" . $post["tid"] . "</a>";
 
     	$this->registry["logs"]->set("obj", $string, $post["tid"], $logs_obj);
-    	
-    	$this->memcached->set("obj" . $post["tid"]);
-    	$this->memcached->delete();
     }
     
     public function moveObj($oid, $tid) {
@@ -345,9 +338,6 @@ class Model_Object extends Modules_Model {
         $string = "Перемещение объекта <a href='" . $this->registry["uri"] . "objects/" . $oid . "/'>" . $oid . "</a> из группы " .  $tprev[0]["tname"] . "-" . $tprev[0]["type_name"] . " в группу " .  $tnext[0]["tname"] . "-" . $tnext[0]["type_name"];
     
     	$this->registry["logs"]->set("obj", $string, $oid);
-    	
-    	$this->memcached->set("obj" . $oid);
-    	$this->memcached->delete();
     }
     
     public function getEmailFromOid($oid) {
@@ -363,6 +353,23 @@ class Model_Object extends Modules_Model {
         if ( (count($data) == 1) and ($data[0]["email"] != null) ) {
         	return $data[0]["email"];
         }
+    }
+    
+    public function getOidFromUniqId($tid, $uniqId) {
+    	$sql = "SELECT ov.oid 
+    	FROM objects_vals AS ov
+    	LEFT JOIN objects AS o ON (o.id = ov.oid)
+    	WHERE ov.val = :val AND o.template = :tid
+    	LIMIT 1";
+    	 
+    	$res = $this->registry['db']->prepare($sql);
+    	$param = array(":tid" => $tid, ":val" => $uniqId);
+    	$res->execute($param);
+    	$data = $res->fetchAll(PDO::FETCH_ASSOC);
+    	
+    	if (count($data) > 0) {
+    		return $data[0]["oid"];
+    	}
     }
 }
 ?>

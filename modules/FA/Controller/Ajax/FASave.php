@@ -8,7 +8,7 @@ class Controller_Ajax_FASave extends Modules_Ajax {
     function __construct($config) {
         parent::__construct($config);     
 
-        if (isset($_GET['qqfile'])) {
+        if (isset($_GET['qqfafile'])) {
             $this->file = new Model_FASave();
         } else {
             $this->file = false; 

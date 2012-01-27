@@ -1,7 +1,7 @@
 <?php
-$url = "http://testing.server/otms_module";
+$url = "http://test/otms/";
 $login = "admin";
-$password = md5("MDwCq66");
+$password = md5("admin");
 $oid = 25;
 //$rall = 1;
 //$ruser[] = 1;

@@ -1,6 +1,5 @@
 <?php
 class Engine_Memcached extends Engine_Interface {
-	private $memcached_enable = true;
 	private $memdata = array();
 	private $mid;
 	private $cache;
@@ -8,12 +7,10 @@ class Engine_Memcached extends Engine_Interface {
 	
 	public function __construct() {
 		parent::__construct();
-
-		if ($this->memcached_enable) {
-			$this->memcached_enable = true;
-			
+		
+		if ($this->registry["memc"]) {
 			$this->cache = new Memcache();
-			$this->cache->connect($this->registry["memcached_adres"], $this->registry["memcached_port"]);
+			$this->cache->connect($this->registry["memc_adres"], $this->registry["memc_port"]);
 		}
 	}
 	
@@ -26,7 +23,7 @@ class Engine_Memcached extends Engine_Interface {
 	}
 
 	public function load() {
-		if ($this->memcached_enable) {
+		if ($this->registry["memc"]) {
 			if ( ($this->memdata = $this->cache->get($this->mid)) === false ) {
 				return false;
 			} else {
@@ -38,7 +35,7 @@ class Engine_Memcached extends Engine_Interface {
 	}
 	
 	public function save($data) {
-		if ($this->memcached_enable) {
+		if ($this->registry["memc"]) {
 			$this->cache->set($this->mid, $data, false, $this->timeLife);
 		} else {
 			return false;
@@ -46,7 +43,7 @@ class Engine_Memcached extends Engine_Interface {
 	}
 	
 	public function saveTime($data, $time) {
-		if ($this->memcached_enable) {
+		if ($this->registry["memc"]) {
 			$this->cache->set($this->mid, $data, false, $time);
 		} else {
 			return false;
@@ -54,7 +51,7 @@ class Engine_Memcached extends Engine_Interface {
 	}
 	
 	public function delete() {
-		if ($this->memcached_enable) {
+		if ($this->registry["memc"]) {
 			$this->cache->delete($this->mid, 0);
 		} else {
 			return false;
@@ -62,7 +59,7 @@ class Engine_Memcached extends Engine_Interface {
 	}
 
 	public function __destruct() {
-		if ($this->memcached_enable) {
+		if ($this->registry["memc"]) {
 			$this->cache->close();
 		} else {
 			return false;
