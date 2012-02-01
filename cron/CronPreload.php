@@ -84,6 +84,9 @@ class CronPreload {
 
 		$this->registry->set('layouts', $layouts);
 		$this->registry->set('templates', $templates);
+
+		$view = new View_Index();
+        $this->registry->set('view', $view);
 	}
 	 
 	public function setInit() {

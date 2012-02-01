@@ -124,13 +124,7 @@ class Modules_View extends View_Index {
     	$content = $this->mainView->render("pager", $array);
     	$this->setMainContent($content);
     }
-    
-    public function unsetModule($mname) {
-    	$content = $this->mainView->render("unsetModule", array("mname" => $mname));    	
-    	$this->mainView->show($content);    	
- 		exit();
-    }
-    
+
     public function setLeftContent($content) {
     	$content = $this->mainView->setLeftContent($content);
     }

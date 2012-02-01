@@ -2,6 +2,8 @@
 class View_Index extends Engine_View {
 
     public $leftBlock = null;
+    private $main_content = null;
+    private $error = null;
     private $content = null;
     private $profile;
     private $topMenu = null;
@@ -14,6 +16,10 @@ class View_Index extends Engine_View {
         $this->leftBlock .= $text;
     }
 
+    public function setMainContent($text) {
+        $this->error .= $text;
+    }
+
 	public function showPage() {
 		if ($this->registry["ui"]["admin"]) {
 			$this->setMenu(array("Система" => "Настройки"), "settings/");
@@ -24,6 +30,10 @@ class View_Index extends Engine_View {
 		
 		$menu = $this->renderMenu();
 		$fastmenu = $this->renderFastMenu();
+
+		if ($this->error != null) {
+			$this->mainContent .= $this->error;
+		}
 		
 		$template = $this->main->loadTemplate($this->registry["ui"]["skin"] . "/layouts.html");
 		$template->display(array("registry" => $this->registry,
@@ -38,6 +48,7 @@ class View_Index extends Engine_View {
 										"fastmenu_notdrop" => $this->fastmenu_notdrop,
 										"leftBlock" => $this->leftBlock,
                                 		"main_content" => $this->mainContent,
+                                		"error" => $this->error,
 										"content" => $this->content,
 										"profile" => $this->profile));
 	}

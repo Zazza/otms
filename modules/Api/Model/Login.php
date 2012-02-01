@@ -16,7 +16,12 @@ class Api_Model_Login extends Modules_Model {
 			return false;
 		}
 
-		$sql = "SELECT * FROM users WHERE login = :login AND pass = :password LIMIT 1";
+		 $sql = "SELECT u.id, p.group
+                FROM users AS u
+                LEFT JOIN users_priv AS p ON (p.id = u.id)
+                WHERE u.login = :login AND u.pass = :password
+                LIMIT 1";
+
 		
 		$res = $this->registry['db']->prepare($sql);
 		$param = array(":login" => $this->_login, ":password" => md5($this->_password));

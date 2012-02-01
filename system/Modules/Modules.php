@@ -15,8 +15,14 @@ class LoadModule extends PreModule {
 	}
 	
 	function show() {
-		$this->module->required_modules();
-		$this->module->show();
+		$en_env = $this->module->required_env();
+		$en_mods = $this->module->required_modules();
+
+		if ( ($en_env) and ($en_mods) ) {
+			$this->module->show();
+		} else {
+			$reason = $this->module->showReason();
+		}
 	}
 }
 
@@ -33,6 +39,8 @@ class PreModule {
 	protected $config;
 	
 	protected $modules = array();
+
+	private $reason = array();
 	
 	function __construct($module_name) {
 		$module = new ReflectionClass($this);
@@ -132,6 +140,26 @@ class PreModule {
 	function setContent($content) {
 		$this->view->setContent($content);
 	}
+
+	protected function required_env() {
+		if (isset($this->config["env"])) {
+			$env = $this->config["env"];
+
+			if (count($env) > 0) {
+				foreach($env as $part) {
+					if ($part == "memcached") {
+						if (!$this->registry["memc"]) {
+							$this->reason[] = "Memcached not enabled";
+
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
 	
 	protected function required_modules() {
 		if (isset($this->config["modules"])) {
@@ -143,12 +171,16 @@ class PreModule {
 				if (isset($this->registry["module_" . $module])) {
 					$this->modules[$module] = $this->registry["module_" . $module];
 				} else {
-					$this->view->unsetModule($module);
+					$this->reason[] = "Не найден требуемый модуль: " . $module;
+
+					return false;
 				}
 			}
 		}
 		
 		$this->config["modules"] = $this->modules;
+
+		return true;
 	}
 	
 	public function ajax($action, $params = null) {
@@ -196,6 +228,10 @@ class PreModule {
 			$functions = new $class($this->config);
 			return $functions->$name($args);
 		}
+	}
+
+	public function showReason() {
+		$this->registry['view']->setMainContent($this->registry['view']->render("errorModule", array("error" => $this->reason)));
 	}
 }
 

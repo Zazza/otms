@@ -91,7 +91,7 @@ class Controller_Api_Tasks extends Controller_Api {
 			} else if ($this->_get["action"] == "getTaskList") {
 		
 				$tid = $this->registry["tt"]->getOidTasks($this->_oid, true);
-		
+
 				foreach($tid as $part) {
 					$row[] = $this->_getTask($part["id"]);
 				}

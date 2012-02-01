@@ -16,7 +16,7 @@ class Cron extends CronPreload {
 		$helpers = new Helpers_Helpers();
 	
 		$users = $this->registry["user"]->getUsersList();
-	
+
 		foreach($users as $uid) {
 			$nowdate = date("Ymd");
 	
