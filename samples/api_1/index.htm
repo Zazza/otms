@@ -9,9 +9,9 @@
 <link href="style.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript">
-var data = "action=getTaskList&login=" + login + "&password=" + password + "&oid=" + oid;
+var data = "module=task&action=getTaskList&login=" + login + "&password=" + password + "&oid=" + oid;
 $.ajax({
-	url: url + "/api/",
+	url: url,
 	data: data,
 	dataType: 'jsonp',
 	success: function(res) {

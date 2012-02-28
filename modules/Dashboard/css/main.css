@@ -1,0 +1,66 @@
+.dashpre {
+	float: left;
+	padding: 2px 5px;
+	text-align: center;
+	margin-right: 10px;
+	height: 20px;
+	width: 150px;
+	border: 1px solid #EEE;
+}
+
+#dashajaxlogs {
+	color: black;
+	overflow-x: none;
+	overflow-y: auto;
+}
+
+.nonotif, .newnotif, .servicenotif  {
+	color: white;
+	padding: 0 3px 3px 3px;
+	font-weight: bold;
+}
+
+.nonotif {
+	background-color: #777;	
+}
+
+.newnotif {
+	background-color: green;
+}
+
+.servicenotif {
+	background-color: red;
+}
+
+.dashbut {
+	float: left;
+	text-align: left;
+	margin: 0 10px 0 3px;
+}
+
+.dashEvent {
+	font-size: 11px;
+	margin: 5px 10px;
+	background-color: #DFE4EA;
+    border: 1px solid #708EAA;
+    border-radius: 2px 2px 2px 2px;
+    display: block;
+    overflow: hidden;
+    padding: 3px 7px;
+    position: relative;
+}
+
+.dashEventSub {
+	overflow: hidden;
+	/*background-color: #708EAA;
+	color: #FFF;*/
+	padding: 1px 3px;
+	margin-right: 10px;
+	font-weight: bold;
+}
+
+#emptyEvents {
+	border: 1px solid #CCC;
+	padding: 10px;
+	text-align: center;
+}

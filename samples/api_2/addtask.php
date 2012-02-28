@@ -6,15 +6,14 @@
 <title>API SAMPLE</title>
 </head>
 <body>
-<p><a id="back" href="http://testing.server/otms_module/samples/api_2/">На главную</a></p>
+<?php require_once 'config.php'; ?>
+<p><a id="back" href="<?php echo $link; ?>">На главную</a></p>
 <?php
-	require_once 'config.php';
-
 	if (isset($_POST["addTask"])) {
 		if ($curl = curl_init()) {
 			$text = rawurlencode($_POST["task"]);
 			
-			$dourl = $url . "/api/?action=addTask&login=" . $login . "&password=" . $password . "&oid=" . $oid . "&text=" . $text;
+			$dourl = $url;
 			if (isset($rall)) {
 				$dourl = $dourl . "&rall=1";
 			}
@@ -27,14 +26,16 @@
 				$dourl = $dourl . "&gruser[]=" . $str;
 			}
 
-			curl_setopt($curl, CURLOPT_URL, $dourl);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, "module=task&action=addTask&login=" . $login . "&password=" . $password . "&oid=" . $oid . "&text=" . $text);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			print_r(curl_exec($curl));
+			$out = curl_exec($curl);
 			curl_close($curl);
 		}
 	}
 ?>
-<form action="http://testing.server/otms_module/samples/api_2/addtask.php" method="post">
+<form action="<?php echo $link; ?>addtask.php" method="post">
 	<textarea name="task" id="taskarea"></textarea>
 	<p><input type="submit" value="Создать" name="addTask" /></p>
 </form>

@@ -39,6 +39,7 @@ html, body {
     margin-bottom: 20px;
     min-height: 20px;
     padding: 5px;
+    margin-left: 10px;
 }
 
 input[type="text"], input[type="password"] {
@@ -115,7 +116,7 @@ button, input, select, textarea {
 	overflow: hidden;
 	text-align: left;
 	font: 1.083em/1.54em Verdana, sans-serif;
-	padding: 0 10px;
+	padding: 70px 0 10px 0;
 }
 
 #leftBlock {

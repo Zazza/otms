@@ -10,7 +10,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#back").attr("href", url + "/samples/api_1/");
+	$("#back").attr("href", link);
 });
 
 function implode(glue, pieces) {
@@ -18,7 +18,7 @@ function implode(glue, pieces) {
 }
 
 function addTask() {
-	var data = "action=addTask&login=" + login + "&password=" + password + "&oid=" + oid + "&text=" + encodeURIComponent($("#taskarea").val());
+	var data = "module=task&action=addTask&login=" + login + "&password=" + password + "&oid=" + oid + "&text=" + encodeURIComponent($("#taskarea").val());
 	if (rall !== undefined) {
 		data = data + "&rall=1";
 	}
@@ -31,11 +31,11 @@ function addTask() {
 		data = data + "&gruser[]=" + str;
 	}
 	$.ajax({
-		url: url + "/api/",
+		url: url,
 		data: data,
 		dataType: 'jsonp',
 		success: function(res) {
-			document.location.href = url + "/samples/api_1/";
+			document.location.href = link;
 		}
 	});
 };

@@ -10,7 +10,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#back").attr("href", url + "/samples/api_1/");
+	$("#back").attr("href", link);
 });
 
 function parseGetParams() { 
@@ -26,9 +26,9 @@ function parseGetParams() {
 var args = parseGetParams();
 var tid = args["tid"];
 
-var data = "action=getTask&login=" + login + "&password=" + password + "&oid=" + oid + "&tid=" + tid;
+var data = "module=task&action=getTask&login=" + login + "&password=" + password + "&oid=" + oid + "&tid=" + tid;
 $.ajax({
-	url: url + "/api/",
+	url: url,
 	data: data,
 	dataType: 'jsonp',
 	success: function(res) {
@@ -65,9 +65,9 @@ $.ajax({
 });
 
 function addComment() {
-	var data = "action=addComment&login=" + login + "&password=" + password + "&oid=" + oid + "&tid=" + tid + "&text=" + encodeURIComponent($("#comment").val());
+	var data = "module=task&action=addComment&login=" + login + "&password=" + password + "&oid=" + oid + "&tid=" + tid + "&text=" + encodeURIComponent($("#comment").val());
 	$.ajax({
-		url: url + "/api/",
+		url: url,
 		data: data,
 		dataType: 'jsonp',
 		success: function(res) {
@@ -77,13 +77,13 @@ function addComment() {
 }
 
 function closeTask() {
-	var data = "action=closeTask&login=" + login + "&password=" + password + "&oid=" + oid + "&tid=" + tid;
+	var data = "module=task&action=closeTask&login=" + login + "&password=" + password + "&oid=" + oid + "&tid=" + tid;
 	$.ajax({
-		url: url + "/api/",
+		url: url,
 		data: data,
 		dataType: 'jsonp',
 		success: function(res) {
-			document.location.href = url + "/samples/api_1/";
+			document.location.href = link;
 		}
 	});
 }

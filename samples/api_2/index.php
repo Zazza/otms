@@ -13,9 +13,9 @@
 	require_once 'config.php';
 	
 	if($curl = curl_init()) {
-		$dourl = $url . "/api/?action=getTaskList&login=" . $login . "&password=" . $password . "&oid=" . $oid;
-
-		curl_setopt($curl, CURLOPT_URL, $dourl);
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_POST, 1);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, "module=task&action=getTaskList&login=" . $login . "&password=" . $password . "&oid=" . $oid);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$out = curl_exec($curl);
 

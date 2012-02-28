@@ -253,27 +253,31 @@ class Model_Ui extends Engine_Model {
 		$res->execute($param);
 		$data = $res->fetchAll(PDO::FETCH_ASSOC);
 		
-		if ($data[0]["auth"] == "0") {
-			$result[] = "--- - " . $data[0]["timestamp"];
+		if (count($data) > 0) {
+			if ($data[0]["auth"] == "0") {
+				$result[] = "--- - " . $data[0]["timestamp"];
+				
+				for($i=1; $i<count($data); $i=$i+2) {
+					if (isset($data[$i+1]["timestamp"])) {
+						$result[] = $data[$i]["timestamp"] . " - " . $data[$i+1]["timestamp"];
+					} else {
+						$result[] = $data[$i]["timestamp"] . " - ---";
+					}
+				}
+			} else {
+				for($i=0; $i<count($data); $i=$i+2) {
+					if (isset($data[$i+1]["timestamp"])) {
+						$result[] = $data[$i]["timestamp"] . " - " . $data[$i+1]["timestamp"];
+					} else {
+						$result[] = $data[$i]["timestamp"] . " - ---";
+					}
+				}
+			}
 			
-			for($i=1; $i<count($data); $i=$i+2) {
-				if (isset($data[$i+1]["timestamp"])) {
-					$result[] = $data[$i]["timestamp"] . " - " . $data[$i+1]["timestamp"];
-				} else {
-					$result[] = $data[$i]["timestamp"] . " - ---";
-				}
-			}
+			return $result;
 		} else {
-			for($i=0; $i<count($data); $i=$i+2) {
-				if (isset($data[$i+1]["timestamp"])) {
-					$result[] = $data[$i]["timestamp"] . " - " . $data[$i+1]["timestamp"];
-				} else {
-					$result[] = $data[$i]["timestamp"] . " - ---";
-				}
-			}
+			return array(0 => "---");
 		}
-		
-		return $result;
 	}
 }
 ?>
