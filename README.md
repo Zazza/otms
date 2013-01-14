@@ -1,12 +1,14 @@
 # OTMS
 
-Full documentation on [site](http://otms-project.ru)
+[Demo](http://tushkan.com/demo/otms/)
 
-[Instruction](http://otms-project.ru/docs/otms.pdf)
+Login and Password: demo/demo
 
-[Demo 1](http://otms-project.ru/demo/otms/)
-[Demo 2](http://otms-project.ru/demo/otmsfree/)
-Login and Password on the site
+Site: [http://tushkan.com/projects/otms/](http://tushkan.com/projects/otms/)
+
+[Instruction](http://tushkan.com/docs/otms.pdf)
 
 ## License
-See COPYING file
+MIT
+
+See [COPYING](https://github.com/Zazza/otms/blob/master/COPYING) file
